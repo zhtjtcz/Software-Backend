@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'zhenguo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'software',
+		'HOST': 'rm-2zegbz515fo6606356o.mysql.rds.aliyuncs.com',
+		'USER': 'marvolo',
+		'PASSWORD': 'Marvolo+1s',
+		'PORT': '3306'
     }
 }
 
