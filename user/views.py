@@ -13,7 +13,7 @@ def register(request):
 		password1 = request.POST.get('password1')
 		password2 = request.POST.get('password2')
 		email = request.POST.get('email')
-		wxid = request.POST.get('wxid')
+		# wxid = request.POST.get('wxid')
 		if Main.objects.filter(username=username).exists():
 			result = {'result': 0, 'message': '用户已存在!'}
 		elif Main.objects.filter(email=email).exists():
@@ -32,7 +32,7 @@ def register(request):
 				new_user.username = username
 				new_user.password = password1
 				new_user.email = email
-				new_user.wxid = wxid
+				# new_user.wxid = wxid
 				new_user.save()
 				result = {'result': 1, 'message': '注册成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -66,4 +66,17 @@ def login(request):
 def email(request):
 	if request.method == 'POST':
 		Email = request.POST.get('email')
-		send_code_email(Email)
+		name,edu = Email.split('@')
+		if edu != 'buaa.edu.cn' or Email.count('@')!=1:
+			result = {'result': 0, 'message': '邮箱格式不正确!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			send_result = send_code_email(Email)
+			if send_result == False:
+				result = {'result': 0, 'message': '发送失败!请检查邮箱格式'}
+			else:
+				result = {'result': 1, 'message': '发送成功!请及时在邮箱中查收.'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
