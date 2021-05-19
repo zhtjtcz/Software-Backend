@@ -4,6 +4,7 @@ import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.email_send import *
+from zhenguo.token import *
 # Create your views here.
 
 @csrf_exempt
@@ -13,7 +14,7 @@ def register(request):
 		password1 = request.POST.get('password1')
 		password2 = request.POST.get('password2')
 		email = request.POST.get('email')
-		# wxid = request.POST.get('wxid')
+		code = request.POST.get('code')
 		if Main.objects.filter(username=username).exists():
 			result = {'result': 0, 'message': '用户已存在!'}
 		elif Main.objects.filter(email=email).exists():
@@ -25,14 +26,16 @@ def register(request):
 			if edu != 'buaa.edu.cn':
 				result = {'result': 0, 'message': '邮箱格式不正确!'}
 			else:
+				if CheckCode(code)==False:
+					result = {'result': 0, 'message': '邮箱验证码错误!'}
+					return  HttpResponse(json.dumps(result), content_type="application/json")
 				all = Main.objects.all()
-				count = len(all) + 1
+				count = len(all)
 				new_user = Main()
 				new_user.ID = count
 				new_user.username = username
 				new_user.password = password1
 				new_user.email = email
-				# new_user.wxid = wxid
 				new_user.save()
 				result = {'result': 1, 'message': '注册成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -56,7 +59,9 @@ def login(request):
 				if user.password != password:
 					result = {'result': 0, 'message': '密码不正确!'}
 				else:
-					result = {'result': 1, 'message': '登录成功!'}
+					request.session['username'] = username
+					request.session['token'] = GetToken(username)
+					result = {'result': 1, 'message': '登录成功!', 'token': GetToken(username)}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -71,7 +76,7 @@ def email(request):
 			result = {'result': 0, 'message': '邮箱格式不正确!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		else:
-			send_result = send_code_email(Email)
+			send_result = SendCodeEmail(Email)
 			if send_result == False:
 				result = {'result': 0, 'message': '发送失败!请检查邮箱格式'}
 			else:
@@ -80,3 +85,7 @@ def email(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def logout(request):
+	request.session.flush()

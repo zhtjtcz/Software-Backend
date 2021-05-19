@@ -8,3 +8,6 @@ class Main(models.Model):
 	password = models.CharField(max_length = 20)
 	email = models.CharField(max_length = 30)
 	wxid = models.CharField(max_length = 20)
+
+class EmailCode(models.Model):
+	code = models.CharField(max_length = 50)
