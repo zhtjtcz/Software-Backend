@@ -3,6 +3,7 @@ from user.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from user.email_send import *
 # Create your views here.
 
 @csrf_exempt
@@ -40,6 +41,7 @@ def register(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
+# TODO token
 def login(request):
 	if request.method == 'POST':
 		username = request.POST.get('username')
@@ -59,3 +61,9 @@ def login(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def email(request):
+	if request.method == 'POST':
+		Email = request.POST.get('email')
+		send_code_email(Email)

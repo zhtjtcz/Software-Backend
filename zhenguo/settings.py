@@ -162,3 +162,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = "smtp.163.com"					# 服务器
+EMAIL_PORT = 25								# 一般情况下都为25
+EMAIL_HOST_USER = "zht823120439@163.com"	# 账号
+EMAIL_HOST_PASSWORD = "JODIFHURVBEBZOBP"	# 密码 (注意：这里的密码指的是授权码)
+EMAIL_USE_TLS = False						# 一般都为False
+EMAIL_FROM = "zht823120439@163.com"			# 邮箱来自
