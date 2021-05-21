@@ -10,11 +10,13 @@ from zhenguo.token import *
 @csrf_exempt
 def register(request):
 	if request.method == 'POST':
-		username = request.POST.get('username')
-		password1 = request.POST.get('password1')
-		password2 = request.POST.get('password2')
-		email = request.POST.get('email')
-		code = request.POST.get('code')
+		data_json = json.loads(request.body)
+		username = data_json.get('username')
+		password1 = data_json.get('password1')
+		password2 = data_json.get('password2')
+		email = data_json.get('email')
+		code = data_json.get('code')
+
 		if Main.objects.filter(username=username).exists():
 			result = {'result': 0, 'message': '用户已存在!'}
 		elif Main.objects.filter(email=email).exists():
@@ -31,11 +33,7 @@ def register(request):
 					return  HttpResponse(json.dumps(result), content_type="application/json")
 				all = Main.objects.all()
 				count = len(all)
-				new_user = Main()
-				new_user.ID = count
-				new_user.username = username
-				new_user.password = password1
-				new_user.email = email
+				new_user = Main(ID=count, username=username, password=password1, email=email)
 				new_user.save()
 				result = {'result': 1, 'message': '注册成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -44,13 +42,14 @@ def register(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
-# TODO token
 def login(request):
 	if request.method == 'POST':
-		username = request.POST.get('username')
-		password = request.POST.get('password')
+		data_json = json.loads(request.body)
+		username = data_json.get('username')
+		password = data_json.get('password')
+		
 		if len(username)==0 or len(password)==0:
-			result = {'result': 0, 'message': r'用户名与密码不允许为空!'}
+			result = {'result': 0, 'message': '用户名与密码不允许为空!'}
 		else:
 			if Main.objects.filter(username=username).exists() == False:
 				result = {'result': 0, 'message': '用户不存在!'}
@@ -60,17 +59,21 @@ def login(request):
 					result = {'result': 0, 'message': '密码不正确!'}
 				else:
 					request.session['username'] = username
-					request.session['token'] = GetToken(username)
-					result = {'result': 1, 'message': '登录成功!', 'token': GetToken(username)}
+					token = GetToken(username)
+					token = str(token)
+					token = token[1:]
+					request.session['token'] = token
+					result = {'result': 1, 'message': '登录成功!', 'token': token}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
-		result = {'result': 0, 'message': '前端炸了!'}
+		result = {'result': 0, 'message': '前端炸了'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
 def email(request):
 	if request.method == 'POST':
-		Email = request.POST.get('email')
+		data_json = json.loads(request.body)
+		Email = data_json.get('email')
 		name,edu = Email.split('@')
 		if edu != 'buaa.edu.cn' or Email.count('@')!=1:
 			result = {'result': 0, 'message': '邮箱格式不正确!'}

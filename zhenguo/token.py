@@ -1,7 +1,9 @@
-import jwt
+from jwt import encode
+import datetime
 
-def GetToken(name, time):
-	return jwt.encode({'username':name,'logintime':time},'f4-*asd7f45ad5+9tr7+',algorithm='HS256')
+def GetToken(name):
+	time = datetime.datetime.now()
+	return encode({'username':name,'logintime': str(time)}, 'secret_key', algorithm='HS256')
 
 def Check(token, request):
 	x = request.session.get('token',0)
