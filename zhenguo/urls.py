@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from user.views import *
+from good.views import *
 
 urlpatterns = [
-	path('login/', login, name='login'),
-	path('register/', register, name='register'),
-	path('email/', email, name='email'),
-	path('logout/', logout, name='logout'),
+	path('user/login/', login, name='login'),
+	path('user/register/', register, name='register'),
+	path('user/email/', email, name='email'),
+	path('user/logout/', logout, name='logout'),
+	
+	path('category/', getcategory, name='category'),
     path('admin/', admin.site.urls),
 ]
