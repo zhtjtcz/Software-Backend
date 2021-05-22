@@ -92,3 +92,13 @@ def email(request):
 @csrf_exempt
 def logout(request):
 	request.session.flush()
+
+
+@csrf_exempt
+def getinfo(request):
+	if request.method == 'GET':
+		# TODO get_user_info
+		pass
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
