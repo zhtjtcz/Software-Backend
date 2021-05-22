@@ -19,11 +19,13 @@ def getcategory(request):
 		result = {'result': 1, 'sum': len(l), 'category': l}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
-
 @csrf_exempt
 def upload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
+		print(request.META.keys())
+		head = request.META.get('HTTP_AUTHORIZATION')
+		print(head)
 		if source:
 			image = GoodImg(imgid=len(GoodImg.objects.all()), img=source)
 			image.save()
