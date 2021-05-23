@@ -1,5 +1,7 @@
 from jwt import encode
+from jwt import decode
 import datetime
+from user.models import Main
 
 def GetToken(name):
 	time = datetime.datetime.now()
@@ -11,3 +13,9 @@ def Check(token, request):
 		return False
 	else:
 		return True
+
+def GetID(token):
+	s = decode(token[1:-1],  'secret_key', algorithm='HS256')
+	user = Main.objects.get(username=s['username'])
+	return user.ID
+	# maybe change

@@ -29,6 +29,7 @@ urlpatterns = [
 	path('user/register/', register, name='register'),
 	path('user/email/', email, name='email'),
 	path('user/logout/', logout, name='logout'),
+	path('user/uploadimg/', uploadimg, name='uploadimg'),
 
  	path('good/uploadimg/', upload, name='upload'),
 	path('category/', getcategory, name='category'),

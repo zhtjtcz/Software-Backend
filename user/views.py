@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.email_send import *
 from zhenguo.token import *
+from zhenguo.settings import *
 # Create your views here.
 
 @csrf_exempt
@@ -93,6 +94,36 @@ def email(request):
 def logout(request):
 	request.session.flush()
 
+@csrf_exempt
+def uploadimg(request):
+	if request.method == 'POST':
+		token = request.META.get('HTTP_AUTHORIZATION', 0)
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		source = request.FILES.get('file')
+		if source:
+			id = GetID(token)
+			image = Userheadshot(userID=id, headshot=source)
+			image.save()
+			result = {'result': 1, 'id': id,'path': MEDIA_SERVER + image.headshot.url, 'url':image.headshot.url}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			result = {'result': 0, 'message': '请检查上传内容!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")	
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+def uploadinfo(request):
+	if request.method == 'POST':
+		# TODO lls
+		# 参考 register
+		# 表为 XXX
+		pass
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")	
 
 @csrf_exempt
 def getinfo(request):

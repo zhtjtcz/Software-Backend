@@ -11,3 +11,7 @@ class Main(models.Model):
 
 class EmailCode(models.Model):
 	code = models.CharField(max_length = 50)
+
+class Userheadshot(models.Model):
+	userID = models.IntegerField(primary_key = True)
+	headshot= models.ImageField(blank = True)

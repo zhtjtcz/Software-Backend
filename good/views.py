@@ -23,9 +23,7 @@ def getcategory(request):
 def upload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
-		print(request.META.keys())
 		head = request.META.get('HTTP_AUTHORIZATION')
-		print(head)
 		if source:
 			image = GoodImg(imgid=len(GoodImg.objects.all()), img=source)
 			image.save()
