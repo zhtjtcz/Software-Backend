@@ -7,8 +7,9 @@ class Category(models.Model):
 	category = models.CharField(max_length = 20)
 	count = models.IntegerField()
 
-class GoodImg(models.Model):
+class GImg(models.Model):
 	imgid = models.IntegerField(primary_key = True)
+	goodid = models.IntegerField(blank = True)
 	img = models.ImageField(blank = True)
 
 class GoodInfo(models.Model):

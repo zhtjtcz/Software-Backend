@@ -3,7 +3,7 @@ from good.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import GoodImg
+from .models import GImg
 from zhenguo.settings import *
 from zhenguo.token import *
 import datetime
@@ -25,9 +25,12 @@ def getcategory(request):
 def upload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
-		head = request.META.get('HTTP_AUTHORIZATION')
+		token = request.META.get('HTTP_AUTHORIZATION')
+		if Check(token, request)==False:
+			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
+		goodid = request.META.get('HTTP_ID')
 		if source:
-			image = GoodImg(imgid=len(GoodImg.objects.all()), img=source)
+			image = GImg(imgid=len(GImg.objects.all()), goodid=goodid, img=source)
 			image.save()
 			return HttpResponse(json.dumps({'success': True,'path': MEDIA_SERVER + image.img.url, 'url':image.img.url}))
 	else:
@@ -51,7 +54,7 @@ def creategood(request):
 		newgood.uploadtime = str(datetime.datetime.now())
 		newgood.onsale = True
 		newgood.save()
-		result = {'result': 1, 'message': '上传成功!'}
+		result = {'result': 1, 'message': '上传成功!', 'id': newgood.goodid}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

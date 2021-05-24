@@ -16,17 +16,17 @@ def createdemand(request):
 		token = data_json.get('token','0')
 		if Check(token, request)==False:
 			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
-		newgood = DemandInfo()
-		newgood.demandid = len(DemandInfo.objects.all())
-		newgood.userid = GetID(token)
-		newgood.demandname = data_json.get('name')
-		newgood.description = data_json.get('description')
-		newgood.categoryid = int(data_json.get('category'))
-		newgood.price = float(data_json.get('price'))
-		newgood.uploadtime = str(datetime.datetime.now())
-		newgood.onsale = True
-		newgood.save()
-		result = {'result': 1, 'message': '上传成功!'}
+		newdemand = DemandInfo()
+		newdemand.demandid = len(DemandInfo.objects.all())
+		newdemand.userid = GetID(token)
+		newdemand.demandname = data_json.get('name')
+		newdemand.description = data_json.get('description')
+		newdemand.categoryid = int(data_json.get('category'))
+		newdemand.price = float(data_json.get('price'))
+		newdemand.uploadtime = str(datetime.datetime.now())
+		newdemand.onsale = True
+		newdemand.save()
+		result = {'result': 1, 'message': '上传成功!', 'id': newdemand.demandid}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
