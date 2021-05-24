@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from user.views import *
-from good.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path,include
 from django.conf.urls import url
 from .settings import *
+from user.views import *
+from good.views import *
+from demand.views import *
 from django.views import static
 
 urlpatterns = [
@@ -32,8 +33,10 @@ urlpatterns = [
 	path('user/uploadimg/', uploadimg, name='uploadimg'),
 
  	path('good/upload/', creategood, name='upload'),
-	# path('good/uploadimg/', upload, name='upload'),
-	path('category/', getcategory, name='category'),
+	path('good/uploadimg/', upload, name='upload'),
+	path('good/category/', getcategory, name='category'),
+
+	path('demand/upload/', createdemand, name='dupload'),
     path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})
 ]
