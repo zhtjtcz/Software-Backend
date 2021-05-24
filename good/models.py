@@ -10,3 +10,13 @@ class Category(models.Model):
 class GoodImg(models.Model):
 	imgid = models.IntegerField(primary_key = True)
 	img = models.ImageField(blank = True)
+
+class GoodInfo(models.Model):
+	goodid = models.IntegerField(primary_key = True)
+	userid = models.IntegerField()
+	goodname = models.CharField(max_length = 50)
+	description = models.CharField(max_length = 200)
+	categoryid = models.IntegerField()
+	uploadtime = models.CharField(max_length = 50)
+	price = models.FloatField()
+	onsale = models.BooleanField()
