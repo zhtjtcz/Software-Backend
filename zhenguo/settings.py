@@ -173,13 +173,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
-EMAIL_HOST = "smtp.163.com"					# 服务器
-EMAIL_USE_SSL = True						# 服务器端设置
-EMAIL_PORT = 465							# 本地为25,服务器为465
-EMAIL_HOST_USER = YAMLINFO['emailuser']	# 账号
+EMAIL_HOST = "smtp.163.com"						# 服务器
+EMAIL_USE_SSL = True							# 服务器端设置
+EMAIL_PORT = 465								# 本地为25,服务器为465
+EMAIL_HOST_USER = YAMLINFO['emailuser']			# 账号
 EMAIL_HOST_PASSWORD = YAMLINFO['emailpassword']	# 密码 (注意：这里的密码指的是授权码)
-EMAIL_USE_TLS = False						# 一般都为False
-EMAIL_FROM = YAMLINFO['emailuser']			# 邮箱来自
+EMAIL_USE_TLS = False							# 一般都为False
+EMAIL_FROM = YAMLINFO['emailuser']				# 邮箱来自
 
 # Media settings
 MEDIA_SERVER = 'http://123.57.194.168:8000'

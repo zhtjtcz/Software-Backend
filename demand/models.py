@@ -11,3 +11,8 @@ class DemandInfo(models.Model):
 	uploadtime = models.CharField(max_length = 50)
 	price = models.FloatField()
 	onsale = models.BooleanField()
+
+class DImg(models.Model):
+	imgid = models.IntegerField(primary_key = True)
+	demandid = models.IntegerField(blank = True)
+	img = models.ImageField(blank = True)
