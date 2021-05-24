@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import yaml
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -111,13 +112,16 @@ WSGI_APPLICATION = 'zhenguo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+YAMLFILE = open("config.yaml", "r")
+YAMLINFO = yaml.load(YAMLFILE.read(), Loader=yaml.FullLoader)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'software',
-		'HOST': 'rm-2zegbz515fo6606356o.mysql.rds.aliyuncs.com',
-		'USER': 'marvolo',
-		'PASSWORD': 'Marvolo+1s',
+        'NAME': YAMLINFO['dbname'],
+		'HOST': YAMLINFO['dbhost'],
+		'USER': YAMLINFO['dbuser'],
+		'PASSWORD': YAMLINFO['dbpassword'],
 		'PORT': '3306'
     }
 }
@@ -172,10 +176,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_HOST = "smtp.163.com"					# 服务器
 EMAIL_USE_SSL = True						# 服务器端设置
 EMAIL_PORT = 465							# 本地为25,服务器为465
-EMAIL_HOST_USER = "zht823120439@163.com"	# 账号
-EMAIL_HOST_PASSWORD = "JODIFHURVBEBZOBP"	# 密码 (注意：这里的密码指的是授权码)
+EMAIL_HOST_USER = YAMLINFO['emailuser']	# 账号
+EMAIL_HOST_PASSWORD = YAMLINFO['emailpassword']	# 密码 (注意：这里的密码指的是授权码)
 EMAIL_USE_TLS = False						# 一般都为False
-EMAIL_FROM = "zht823120439@163.com"			# 邮箱来自
+EMAIL_FROM = YAMLINFO['emailuser']			# 邮箱来自
 
 # Media settings
 MEDIA_SERVER = 'http://123.57.194.168:8000'
