@@ -32,11 +32,12 @@ urlpatterns = [
 	path('user/logout/', logout, name='logout'),
 	path('user/uploadimg/', uploadimg, name='uploadimg'),
 
- 	path('good/upload/', creategood, name='upload'),
-	path('good/uploadimg/', upload, name='upload'),
+	path('good/upload/', creategood, name='upload'),
+	path('good/uploadimg/', upload, name='gimgupload'),
 	path('good/category/', getcategory, name='category'),
 
 	path('demand/upload/', createdemand, name='dupload'),
-    path('admin/', admin.site.urls),
+	path('demand/uploadimg/', dupload, name='dimgupload'),
+	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})
 ]

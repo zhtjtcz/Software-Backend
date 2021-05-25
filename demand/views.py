@@ -31,3 +31,19 @@ def createdemand(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def dupload(request):
+	if request.method == 'POST':
+		source = request.FILES.get('file')
+		token = request.META.get('HTTP_AUTHORIZATION')
+		if Check(token, request)==False:
+			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
+		demangid = request.META.get('HTTP_ID')
+		if source:
+			image = DImg(imgid=len(DImg.objects.all()), demangid=demangid, img=source)
+			image.save()
+			return HttpResponse(json.dumps({'success': True,'path': MEDIA_SERVER + image.img.url, 'url':image.img.url}))
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
