@@ -35,6 +35,7 @@ urlpatterns = [
 	path('user/unfollow/', unfollow, name='unfollow'),
 	path('user/collect/', collect, name='collect'),
 	path('user/uncollect/', uncollect, name='uncollect'),
+	path('user/collectlist/', collectlist, name='collectlist'),
 
 	path('good/upload/', creategood, name='upload'),
 	path('good/uploadimg/', upload, name='gimgupload'),
