@@ -115,6 +115,7 @@ def uploadimg(request):
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
+@csrf_exempt
 def uploadinfo(request):
 	if request.method == 'POST':
 		# TODO lls
@@ -130,6 +131,27 @@ def getinfo(request):
 	if request.method == 'GET':
 		# TODO get_user_info
 		pass
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def follow(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		followingid = Main.objects.get(username=data_json.get('username')).ID
+		if UserFollow.objects.filter(userID = id, followID = followingid).exists() == True:
+			result = {'result': 0, 'message': '已关注该用户!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		NewFollow = UserFollow(userID = id, followID = followingid)
+		NewFollow.save()
+		result = {'result': 1, 'message': '关注成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")

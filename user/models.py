@@ -24,3 +24,7 @@ class UserInfo(models.Model):
 	location = models.IntegerField(blank = True)
 	tradecount = models.IntegerField(blank = True)
 	score = models.FloatField(blank = True)
+
+class UserFollow(models.Model):
+	userID = models.IntegerField()
+	followID = models.IntegerField()
