@@ -32,6 +32,7 @@ urlpatterns = [
 	path('user/logout/', logout, name='logout'),
 	path('user/uploadimg/', uploadimg, name='uploadimg'),
 	path('user/follow/', follow, name='follow'),
+	path('user/collect/', collect, name='collect'),
 
 	path('good/upload/', creategood, name='upload'),
 	path('good/uploadimg/', upload, name='gimgupload'),
