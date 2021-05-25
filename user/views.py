@@ -177,3 +177,24 @@ def collect(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def unfollow(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		followingid = Main.objects.get(username=data_json.get('username')).ID
+		if UserFollow.objects.filter(userID = id, followID = followingid).exists() == False:
+			result = {'result': 0, 'message': '未关注该用户!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		F = UserFollow.objects.get(userID = id, followID = followingid)
+		F.delete()
+		result = {'result': 1, 'message': '取消关注成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
