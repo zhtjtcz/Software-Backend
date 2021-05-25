@@ -8,3 +8,4 @@ build
 /img/*
 *.yaml
 /config.yaml
+*.pyc
