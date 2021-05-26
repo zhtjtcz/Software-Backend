@@ -16,3 +16,7 @@ class DImg(models.Model):
 	imgid = models.IntegerField(primary_key = True)
 	demandid = models.IntegerField(blank = True)
 	img = models.ImageField(blank = True)
+
+class DemandCollect(models.Model):
+	userID = models.IntegerField()
+	demandID = models.IntegerField()

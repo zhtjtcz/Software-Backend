@@ -74,3 +74,47 @@ def getdemand(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def demandcollect(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		demandid = int(data_json.get('demandid'))
+		if DemandCollect.objects.filter(userID = id, demandID = demandid).exists() == True:
+			result = {'result': 0, 'message': '已收藏该需求!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		NewCollect = DemandCollect(userID = id, demandID = demandid)
+		NewCollect.save()
+		result = {'result': 1, 'message': '收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def demanduncollect(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		demandid = int(data_json.get('demandid'))
+		if DemandCollect.objects.filter(userID = id, demandID = demandid).exists() == False:
+			result = {'result': 0, 'message': '未收藏该需求!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		Collect = DemandCollect.objects.get(userID = id, demandID = demandid)
+		Collect.delete()
+		result = {'result': 1, 'message': '取消收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
