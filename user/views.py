@@ -1,3 +1,4 @@
+from good.models import *
 from django.shortcuts import render
 from user.models import *
 import json
@@ -246,11 +247,19 @@ def collectlist(request):
 		id = GetID(token)
 		
 		l = UserCollect.objects.filter(userID = id)
-		print(id)
-		print(l)
+		l = [GoodInfo.objects.get(goodid = i.goodID) for i in l]
+		name = [i.goodname for i in l]
+		description = [i.description for i in l]
+		price = [i.price for i in l]
+		url = []
 		for i in l:
-			print(i.goodID)
-		
+			if GImg.objects.filter(goodid = i.goodid).exists() == True:
+				imgs = GImg.objects.filter(goodid = i.goodid)
+				url.append(MEDIA_SERVER + imgs[0].img.url)
+			else:
+				url.append('NULL')
+		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
