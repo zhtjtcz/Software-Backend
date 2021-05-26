@@ -37,6 +37,8 @@ def register(request):
 				count = len(all)
 				new_user = Main(ID=count, username=username, password=password1, email=email)
 				new_user.save()
+				new_info = UserInfo(userID = count)
+				new_info.save()
 				result = {'result': 1, 'message': '注册成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -248,14 +250,29 @@ def uncollect(request):
 
 @csrf_exempt
 def followlist(request):
-	if request.method == 'POST':
+	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		if Check(token, request)==False:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		id = GetID(token)
-		#TODO follow list
+		followlist = UserFollow.objects.filter(userID = id)
+		
+		personlist = [UserInfo.objects.get(userID = i.followID) for i in followlist]
+		name = [Main.objects.get(ID = i.userID).username for i in personlist]
+		grade = [i.grade if i.grade else -1 for i in personlist]
+		location = [i.location if i.location else -1 for i in personlist]
+		score = [i.score if i.score else -1 for i in personlist]
+		url = []
+		for i in personlist:
+			if Userheadshot.objects.filter(userID = i.userID).exists() == True:
+				imgs = Userheadshot.objects.get(userID = i.userID)
+				url.append(MEDIA_SERVER + imgs.img.url)
+			else:
+				url.append('NULL')
+		result = {'result': 1, 'message': '获取成功!', 'name': name, 'grade': grade, 'location': location, 'url':url, 'score': score}
+		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")

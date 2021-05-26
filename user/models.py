@@ -18,12 +18,12 @@ class Userheadshot(models.Model):
 
 class UserInfo(models.Model):
 	userID = models.IntegerField(primary_key = True)
-	sex = models.IntegerField(blank = True)
-	grade = models.IntegerField(blank = True)
+	sex = models.IntegerField(blank = True, null = True)
+	grade = models.IntegerField(blank = True, null = True)
 	telephone = models.CharField(max_length=15, blank = True)
-	location = models.IntegerField(blank = True)
-	tradecount = models.IntegerField(blank = True)
-	score = models.FloatField(blank = True)
+	location = models.IntegerField(blank = True, null = True)
+	tradecount = models.IntegerField(blank = True, null = True)
+	score = models.FloatField(blank = True, null = True)
 
 class UserFollow(models.Model):
 	userID = models.IntegerField()
