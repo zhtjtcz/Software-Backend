@@ -42,6 +42,7 @@ urlpatterns = [
 	path('good/upload/', creategood, name='upload'),
 	path('good/uploadimg/', upload, name='gimgupload'),
 	path('good/category/', getcategory, name='category'),
+	path('good/getgood/', getgood, name='getgood'),
 
 	path('demand/upload/', createdemand, name='dupload'),
 	path('demand/uploadimg/', dupload, name='dimgupload'),

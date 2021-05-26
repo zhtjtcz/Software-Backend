@@ -76,17 +76,22 @@ def email(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		Email = data_json.get('email')
-		name,edu = Email.split('@')
-		if edu != 'buaa.edu.cn' or Email.count('@')!=1:
+		if Email.count('@')==1:
+			name,edu = Email.split('@')
+			if edu == 'buaa.edu.cn':
+				send_result = SendCodeEmail(Email)
+				if send_result == False:
+					result = {'result': 0, 'message': '发送失败!请检查邮箱格式'}
+				else:
+					result = {'result': 1, 'message': '发送成功!请及时在邮箱中查收.'}
+					return HttpResponse(json.dumps(result), content_type="application/json")
+			else:
+				result = {'result': 0, 'message': '邮箱格式不正确!'}
+				return HttpResponse(json.dumps(result), content_type="application/json")	
+		else:
 			result = {'result': 0, 'message': '邮箱格式不正确!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		else:
-			send_result = SendCodeEmail(Email)
-			if send_result == False:
-				result = {'result': 0, 'message': '发送失败!请检查邮箱格式'}
-			else:
-				result = {'result': 1, 'message': '发送成功!请及时在邮箱中查收.'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
+
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
