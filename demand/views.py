@@ -47,3 +47,30 @@ def dupload(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def getdemand(request):
+	if request.method == 'GET':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+
+		l = DemandInfo.objects.filter(userid = id)
+		name = [i.demandname for i in l]
+		description = [i.description for i in l]
+		price = [i.price for i in l]
+		url = []
+		for i in l:
+			if DImg.objects.filter(demandid = i.demandid).exists() == True:
+				imgs = DImg.objects.filter(demandid = i.demandid)
+				url.append(MEDIA_SERVER + imgs[0].img.url)
+			else:
+				url.append('NULL')
+		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")

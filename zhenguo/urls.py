@@ -46,6 +46,7 @@ urlpatterns = [
 
 	path('demand/upload/', createdemand, name='dupload'),
 	path('demand/uploadimg/', dupload, name='dimgupload'),
+	path('demand/getdemand/', getdemand, name='getdemand'),
 	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})
 ]
