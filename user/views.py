@@ -130,8 +130,17 @@ def uploadinfo(request):
 @csrf_exempt
 def getinfo(request):
 	if request.method == 'GET':
-		# TODO get_user_info
-		pass
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		base = Main.objects.get(ID = id)
+		more = UserInfo.objects.get(userID = id)
+		result = {'result': 0, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
+			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location, 'score': more.score}
+		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -231,7 +240,7 @@ def followlist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		id = GetID(token)
-
+		#TODO follow list
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
