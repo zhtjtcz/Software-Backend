@@ -139,6 +139,9 @@ def uploadinfo(request):
 		user.location = int(data_json.get('location'))
 		user.telephone = data_json.get('telephone')
 		user.save()
+		user = Main.objects.get(ID = id)
+		user.wxid = data_json.get('wxid')
+		user.save()
 		result = {'result': 1, 'message': '修改成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -156,7 +159,7 @@ def getinfo(request):
 		id = GetID(token)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
-		result = {'result': 0, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
+		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
 			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location, 'score': more.score}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -236,7 +239,7 @@ def followlist(request):
 
 @csrf_exempt
 def goodcollectlist(request):
-	if request.method == 'POST':
+	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		if Check(token, request)==False:
@@ -264,7 +267,7 @@ def goodcollectlist(request):
 
 @csrf_exempt
 def demandcollectlist(request):
-	if request.method == 'POST':
+	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		if Check(token, request)==False:
