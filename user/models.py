@@ -28,7 +28,3 @@ class UserInfo(models.Model):
 class UserFollow(models.Model):
 	userID = models.IntegerField()
 	followID = models.IntegerField()
-
-class UserCollect(models.Model):
-	userID = models.IntegerField()
-	goodID = models.IntegerField()

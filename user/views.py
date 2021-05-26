@@ -184,28 +184,6 @@ def follow(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
-def collect(request):
-	if request.method == 'POST':
-		data_json = json.loads(request.body)
-		token = data_json.get('token')
-		
-		if Check(token, request)==False:
-			result = {'result': 0, 'message': 'Token有误!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
-		goodid = int(data_json.get('goodid'))
-		if UserCollect.objects.filter(userID = id, goodID = goodid).exists() == True:
-			result = {'result': 0, 'message': '已收藏该商品!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
-		NewCollect = UserCollect(userID = id, goodID = goodid)
-		NewCollect.save()
-		result = {'result': 1, 'message': '收藏成功!'}
-		return HttpResponse(json.dumps(result), content_type="application/json")
-	else:
-		result = {'result': 0, 'message': '前端炸了!'}
-		return HttpResponse(json.dumps(result), content_type="application/json")
-
-@csrf_exempt
 def unfollow(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
@@ -221,28 +199,6 @@ def unfollow(request):
 		Follow = UserFollow.objects.get(userID = id, followID = followingid)
 		Follow.delete()
 		result = {'result': 1, 'message': '取消关注成功!'}
-		return HttpResponse(json.dumps(result), content_type="application/json")
-	else:
-		result = {'result': 0, 'message': '前端炸了!'}
-		return HttpResponse(json.dumps(result), content_type="application/json")
-
-@csrf_exempt
-def uncollect(request):
-	if request.method == 'POST':
-		data_json = json.loads(request.body)
-		token = data_json.get('token')
-		
-		if Check(token, request)==False:
-			result = {'result': 0, 'message': 'Token有误!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
-		goodid = int(data_json.get('goodid'))
-		if UserCollect.objects.filter(userID = id, goodID = goodid).exists() == False:
-			result = {'result': 0, 'message': '未收藏该商品!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
-		Collect = UserCollect.objects.get(userID = id, goodID = goodid)
-		Collect.delete()
-		result = {'result': 1, 'message': '取消收藏成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -278,7 +234,7 @@ def followlist(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
-def collectlist(request):
+def goodcollectlist(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
@@ -287,7 +243,7 @@ def collectlist(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		id = GetID(token)
 		
-		l = UserCollect.objects.filter(userID = id)
+		l = GoodCollect.objects.filter(userID = id)
 		l = [GoodInfo.objects.get(goodid = i.goodID) for i in l]
 		name = [i.goodname for i in l]
 		description = [i.description for i in l]

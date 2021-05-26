@@ -21,3 +21,7 @@ class GoodInfo(models.Model):
 	uploadtime = models.CharField(max_length = 50)
 	price = models.FloatField()
 	onsale = models.BooleanField()
+
+class GoodCollect(models.Model):
+	userID = models.IntegerField()
+	goodID = models.IntegerField()

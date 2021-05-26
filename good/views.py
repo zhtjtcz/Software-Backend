@@ -86,3 +86,47 @@ def getgood(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def goodcollect(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		goodid = int(data_json.get('goodid'))
+		if GoodCollect.objects.filter(userID = id, goodID = goodid).exists() == True:
+			result = {'result': 0, 'message': '已收藏该商品!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		NewCollect = GoodCollect(userID = id, goodID = goodid)
+		NewCollect.save()
+		result = {'result': 1, 'message': '收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def gooduncollect(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		goodid = int(data_json.get('goodid'))
+		if GoodCollect.objects.filter(userID = id, goodID = goodid).exists() == False:
+			result = {'result': 0, 'message': '未收藏该商品!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		Collect = GoodCollect.objects.get(userID = id, goodID = goodid)
+		Collect.delete()
+		result = {'result': 1, 'message': '取消收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
