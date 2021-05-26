@@ -21,8 +21,8 @@ def register(request):
 
 		if Main.objects.filter(username=username).exists():
 			result = {'result': 0, 'message': '用户已存在!'}
-		elif Main.objects.filter(email=email).exists():
-			result = {'result': 0, 'message': '邮箱已注册!'}
+		#elif Main.objects.filter(email=email).exists():
+		#	result = {'result': 0, 'message': '邮箱已注册!'}
 		elif password1 != password2:
 			result = {'result': 0, 'message': '两次密码不匹配!'}
 		else:
@@ -119,10 +119,20 @@ def uploadimg(request):
 @csrf_exempt
 def uploadinfo(request):
 	if request.method == 'POST':
-		# TODO lls
-		# 参考 register
-		# 表为 XXX
-		pass
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		if Check(token, request)==False:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		id = GetID(token)
+		user = UserInfo.objects.get(userID = id)
+		user.sex = int(data_json.get('sex'))
+		user.grade = int(data_json.get('grade'))
+		user.location = int(data_json.get('location'))
+		user.telephone = data_json.get('telephone')
+		user.save()
+		result = {'result': 1, 'message': '修改成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")	
