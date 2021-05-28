@@ -107,12 +107,12 @@ def logout(request):
 def uploadimg(request):
 	if request.method == 'POST':
 		token = request.META.get('HTTP_AUTHORIZATION', 0)
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		source = request.FILES.get('file')
 		if source:
-			id = GetID(token)
 			image = Userheadshot(userID=id, headshot=source)
 			image.save()
 			result = {'result': 1, 'id': id,'path': MEDIA_SERVER + image.headshot.url, 'url':image.headshot.url}
@@ -129,10 +129,10 @@ def uploadinfo(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		user = UserInfo.objects.get(userID = id)
 		user.sex = int(data_json.get('sex'))
 		user.grade = int(data_json.get('grade'))
@@ -153,10 +153,10 @@ def getinfo(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
 		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
@@ -171,10 +171,10 @@ def follow(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		followingid = Main.objects.get(username=data_json.get('username')).ID
 		if UserFollow.objects.filter(userID = id, followID = followingid).exists() == True:
 			result = {'result': 0, 'message': '已关注该用户!'}
@@ -192,10 +192,10 @@ def unfollow(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		followingid = Main.objects.get(username=data_json.get('username')).ID
 		if UserFollow.objects.filter(userID = id, followID = followingid).exists() == False:
 			result = {'result': 0, 'message': '未关注该用户!'}
@@ -213,10 +213,10 @@ def followlist(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		followlist = UserFollow.objects.filter(userID = id)
 		
 		personlist = [UserInfo.objects.get(userID = i.followID) for i in followlist]
@@ -242,10 +242,10 @@ def goodcollectlist(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		
 		l = GoodCollect.objects.filter(userID = id)
 		l = [GoodInfo.objects.get(goodid = i.goodID) for i in l]
@@ -270,10 +270,10 @@ def demandcollectlist(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		
 		l = DemandCollect.objects.filter(userID = id)
 		l = [DemandInfo.objects.get(demandid = i.demandID) for i in l]

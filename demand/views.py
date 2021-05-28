@@ -14,11 +14,13 @@ def createdemand(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token','0')
-		if Check(token, request)==False:
-			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
 		newdemand = DemandInfo()
 		newdemand.demandid = len(DemandInfo.objects.all())
-		newdemand.userid = GetID(token)
+		newdemand.userid = id
 		newdemand.demandname = data_json.get('name')
 		newdemand.description = data_json.get('description')
 		newdemand.categoryid = int(data_json.get('category'))
@@ -36,9 +38,7 @@ def createdemand(request):
 def dupload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
-		token = request.META.get('HTTP_AUTHORIZATION')
-		if Check(token, request)==False:
-			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
+		demandid = int(request.META.get('HTTP_AUTHORIZATION'))
 		demangid = request.META.get('HTTP_ID')
 		if source:
 			image = DImg(imgid=len(DImg.objects.all()), demangid=demangid, img=source)
@@ -53,10 +53,10 @@ def getdemand(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 
 		l = DemandInfo.objects.filter(userid = id)
 		name = [i.demandname for i in l]
@@ -81,10 +81,10 @@ def demandcollect(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		demandid = int(data_json.get('demandid'))
 		if DemandCollect.objects.filter(userID = id, demandID = demandid).exists() == True:
 			result = {'result': 0, 'message': '已收藏该需求!'}
@@ -103,10 +103,10 @@ def demanduncollect(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		demandid = int(data_json.get('demandid'))
 		if DemandCollect.objects.filter(userID = id, demandID = demandid).exists() == False:
 			result = {'result': 0, 'message': '未收藏该需求!'}

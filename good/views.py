@@ -25,10 +25,7 @@ def getcategory(request):
 def upload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
-		token = request.META.get('HTTP_AUTHORIZATION')
-		if Check(token, request)==False:
-			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
-		goodid = request.META.get('HTTP_ID')
+		goodid = int(request.META.get('HTTP_AUTHORIZATION'))
 		if source:
 			image = GImg(imgid=len(GImg.objects.all()), goodid=goodid, img=source)
 			image.save()
@@ -42,11 +39,13 @@ def creategood(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token','0')
-		if Check(token, request)==False:
-			return HttpResponse(json.dumps({'result': 0, 'message': 'Token有误!'}), content_type="application/json")
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
 		newgood = GoodInfo()
 		newgood.goodid = len(GoodInfo.objects.all())
-		newgood.userid = GetID(token)
+		newgood.userid = id
 		newgood.goodname = data_json.get('name')
 		newgood.description = data_json.get('description')
 		newgood.categoryid = int(data_json.get('category'))
@@ -65,10 +64,10 @@ def getgood(request):
 	if request.method == 'GET':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 
 		l = GoodInfo.objects.filter(userid = id)
 		name = [i.goodname for i in l]
@@ -93,10 +92,10 @@ def goodcollect(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		goodid = int(data_json.get('goodid'))
 		if GoodCollect.objects.filter(userID = id, goodID = goodid).exists() == True:
 			result = {'result': 0, 'message': '已收藏该商品!'}
@@ -115,10 +114,10 @@ def gooduncollect(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		
-		if Check(token, request)==False:
+		id = Check(token)
+		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		id = GetID(token)
 		goodid = int(data_json.get('goodid'))
 		if GoodCollect.objects.filter(userID = id, goodID = goodid).exists() == False:
 			result = {'result': 0, 'message': '未收藏该商品!'}
