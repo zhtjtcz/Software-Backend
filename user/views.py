@@ -150,7 +150,7 @@ def uploadinfo(request):
 
 @csrf_exempt
 def getinfo(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
@@ -210,7 +210,7 @@ def unfollow(request):
 
 @csrf_exempt
 def followlist(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
@@ -239,7 +239,7 @@ def followlist(request):
 
 @csrf_exempt
 def goodcollectlist(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
@@ -267,7 +267,7 @@ def goodcollectlist(request):
 
 @csrf_exempt
 def demandcollectlist(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)

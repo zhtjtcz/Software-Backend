@@ -5,7 +5,7 @@ from user.models import Main
 
 def GetToken(name):
 	time = datetime.datetime.now()
-	return encode({'username':name, 'logintime': str(time), 'id':Main.objects.get(username=name)}, 'secret_key', algorithm='HS256')
+	return encode({'username':name, 'logintime': str(time), 'id':Main.objects.get(username=name).ID}, 'secret_key', algorithm='HS256')
 
 def Check(token):
 	try:

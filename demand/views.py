@@ -50,7 +50,7 @@ def dupload(request):
 
 @csrf_exempt
 def getdemand(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
