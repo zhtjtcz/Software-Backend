@@ -70,6 +70,7 @@ def getgood(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 
 		l = GoodInfo.objects.filter(userid = id)
+		id = [i.goodid for i in l]
 		name = [i.goodname for i in l]
 		description = [i.description for i in l]
 		price = [i.price for i in l]
@@ -80,7 +81,7 @@ def getgood(request):
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
 				url.append('NULL')
-		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

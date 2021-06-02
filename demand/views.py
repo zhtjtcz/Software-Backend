@@ -59,6 +59,7 @@ def getdemand(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 
 		l = DemandInfo.objects.filter(userid = id)
+		id = [i.demandid for i in l]
 		name = [i.demandname for i in l]
 		description = [i.description for i in l]
 		price = [i.price for i in l]

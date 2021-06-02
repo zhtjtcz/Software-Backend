@@ -125,6 +125,25 @@ def uploadimg(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
+def getuser(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		base = Main.objects.get(ID = id)
+		more = UserInfo.objects.get(userID = id)
+		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'url': 'NULL', 'score': more.score}
+		if Userheadshot.objects.filter(userID = id).exists()==True:
+			result['url']=MEDIA_SERVER + Userheadshot.objects.get(userID = id).headshot.url
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
 def uploadinfo(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
@@ -160,7 +179,7 @@ def getinfo(request):
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
 		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
-			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location, 'score': more.score}
+			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -218,7 +237,8 @@ def followlist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		followlist = UserFollow.objects.filter(userID = id)
-		
+		for i in followlist:
+			print(i.followID)
 		personlist = [UserInfo.objects.get(userID = i.followID) for i in followlist]
 		name = [Main.objects.get(ID = i.userID).username for i in personlist]
 		grade = [i.grade if i.grade else -1 for i in personlist]
@@ -249,6 +269,7 @@ def goodcollectlist(request):
 		
 		l = GoodCollect.objects.filter(userID = id)
 		l = [GoodInfo.objects.get(goodid = i.goodID) for i in l]
+		id = [i.goodid for i in l]
 		name = [i.goodname for i in l]
 		description = [i.description for i in l]
 		price = [i.price for i in l]
@@ -259,7 +280,7 @@ def goodcollectlist(request):
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
 				url.append('NULL')
-		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -277,6 +298,7 @@ def demandcollectlist(request):
 		
 		l = DemandCollect.objects.filter(userID = id)
 		l = [DemandInfo.objects.get(demandid = i.demandID) for i in l]
+		id = [i.demandid for i in l]
 		name = [i.demandname for i in l]
 		description = [i.description for i in l]
 		price = [i.price for i in l]
@@ -287,7 +309,7 @@ def demandcollectlist(request):
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
 				url.append('NULL')
-		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
