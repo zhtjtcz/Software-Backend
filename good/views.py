@@ -1,5 +1,7 @@
+from django.db import reset_queries
 from django.shortcuts import render
 from good.models import *
+from user.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -126,6 +128,39 @@ def gooduncollect(request):
 		Collect = GoodCollect.objects.get(userID = id, goodID = goodid)
 		Collect.delete()
 		result = {'result': 1, 'message': '取消收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def goodinfo(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		goodid = int(data_json.get('id'))
+		result = {}
+		Good = GoodInfo.objects.get(goodid = goodid)
+		result["title"] = Good.goodname
+		result["price"] = Good.price
+		result["description"] = Good.description
+		result["isSold"] = Good.onsale
+		result["date"] = Good.uploadtime
+		if GImg.objects.filter(goodid = goodid).exists() == True:
+			imgs = GImg.objects.filter(goodid = goodid)
+			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
+		else:
+			result["imageUrls"] = ["NULL"]
+		
+		release = UserInfo.objects.get(userID = Good.userid)
+		result["name"] = Main.objects.get(ID = Good.userid)
+		result["credit"] = release.score
+		if Userheadshot.objects.filter(userID = Good.userid).exists()==True:
+			result["avatar"] = Userheadshot.objects.get(userID = Good.userid).headshot.url
+		else:
+			result["avatar"] = "NULL"
+
+		result["result"] = 1
+		result["message"] = "查询成功"
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

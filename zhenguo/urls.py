@@ -44,6 +44,7 @@ urlpatterns = [
 	path('good/uploadimg/', upload, name='gimgupload'),
 	path('good/category/', getcategory, name='category'),
 	path('good/getgood/', getgood, name='getgood'),
+	path('good/goodinfo/', goodinfo, name='goodinfo'),
 	path('good/collect/', goodcollect, name='goodcollect'),
 	path('good/uncollect/', gooduncollect, name='gooduncollect'),
 

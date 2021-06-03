@@ -113,8 +113,12 @@ def uploadimg(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		source = request.FILES.get('file')
 		if source:
-			image = Userheadshot(userID=id, headshot=source)
-			image.save()
+			if Userheadshot.objects.filter(userID =id).exists()==True:
+				image = Userheadshot.objects.get(userID = id)
+				image.headshot = source
+			else:
+				image = Userheadshot(userID=id, headshot=source)
+				image.save()
 			result = {'result': 1, 'id': id,'path': MEDIA_SERVER + image.headshot.url, 'url':image.headshot.url}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		else:
@@ -180,6 +184,8 @@ def getinfo(request):
 		more = UserInfo.objects.get(userID = id)
 		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
 			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location}
+		if base.wxid=="":
+			result['wxid'] = -1
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
