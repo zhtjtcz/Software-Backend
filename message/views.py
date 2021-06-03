@@ -30,9 +30,10 @@ def reply(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 def GetReplyInfo(i):
-	d = {"text":i.text, "sendtime":i.sendtime}
+	d = {"text":i.text, "sendtime":i.sendtime[:16]}
 	d["username"] = Main.objects.get(ID = i.sendID).username
 	d["url"] = Userheadshot.objects.get(userID = i.sendID).headshot.url
+	d["id"] = i.ID
 	return d
 
 @csrf_exempt

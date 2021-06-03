@@ -48,6 +48,7 @@ urlpatterns = [
 	path('good/goodinfo/', goodinfo, name='goodinfo'),
 	path('good/collect/', goodcollect, name='goodcollect'),
 	path('good/uncollect/', gooduncollect, name='gooduncollect'),
+	path('good/allgood/', allgood, name='allgood'),
 
 	path('demand/upload/', createdemand, name='dupload'),
 	path('demand/uploadimg/', dupload, name='dimgupload'),

@@ -165,3 +165,27 @@ def goodinfo(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def allgood(request):
+	if request.method == 'POST':
+		result = {'result': 1, 'message': '获取成功!'}
+		all = GoodInfo.objects.all()
+		good = []
+		for i in all:
+			d = {}
+			d["id"] = i.goodid
+			d["price"] = i.price
+			d["name"] = i.goodname
+			if GImg.objects.filter(goodid = i.goodid).exists() == True:
+				imgs = GImg.objects.filter(goodid = i.goodid)
+				d["urls"] = (MEDIA_SERVER + imgs[0].img.url)
+			else:
+				d["urls"] = "NULL"
+			
+			good.append(d)
+		result["good"] = good
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
