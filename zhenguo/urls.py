@@ -23,6 +23,7 @@ from .settings import *
 from user.views import *
 from good.views import *
 from demand.views import *
+from message.views import *
 from django.views import static
 
 urlpatterns = [
@@ -53,6 +54,11 @@ urlpatterns = [
 	path('demand/getdemand/', getdemand, name='getdemand'),
 	path('demand/collect/', demandcollect, name='demandcollect'),
 	path('demand/uncollect/', demanduncollect, name='demanduncollect'),
+	path('demand/demandinfo/', demandinfo, name='demandinfo'),
+
+	path('message/reply/', reply, name='reply'),
+	path('message/getreply/', getreply, name='getreply'),
+
 	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})
 ]
