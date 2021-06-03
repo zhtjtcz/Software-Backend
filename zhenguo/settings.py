@@ -37,6 +37,8 @@ INSTALLED_APPS = [
 	'good',
 	'demand',
 	'message',
+	'trade',
+	'inform',
 	'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
