@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from demand.models import *
+from user.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -115,6 +116,39 @@ def demanduncollect(request):
 		Collect = DemandCollect.objects.get(userID = id, demandID = demandid)
 		Collect.delete()
 		result = {'result': 1, 'message': '取消收藏成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def demandinfo(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		demandid = int(data_json.get('id'))
+		result = {}
+		Demand = DemandInfo.objects.get(demandid = demandid)
+		result["title"] = Demand.demandname
+		result["price"] = Demand.price
+		result["description"] = Demand.description
+		result["isSold"] = Demand.onsale
+		result["date"] = Demand.uploadtime
+		if DImg.objects.filter(demandid = demandid).exists() == True:
+			imgs = DImg.objects.filter(demandid = demandid)
+			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
+		else:
+			result["imageUrls"] = ["NULL"]
+		
+		release = UserInfo.objects.get(userID = Demand.userid)
+		result["name"] = Main.objects.get(ID = Demand.userid)
+		result["credit"] = release.score
+		if Userheadshot.objects.filter(userID = Demand.userid).exists()==True:
+			result["avatar"] = Userheadshot.objects.get(userID = Demand.userid).headshot.url
+		else:
+			result["avatar"] = "NULL"
+
+		result["result"] = 1
+		result["message"] = "查询成功"
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
