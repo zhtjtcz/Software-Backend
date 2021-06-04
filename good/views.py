@@ -152,7 +152,7 @@ def goodinfo(request):
 			result["imageUrls"] = ["NULL"]
 		
 		release = UserInfo.objects.get(userID = Good.userid)
-		result["name"] = Main.objects.get(ID = Good.userid)
+		result["name"] = Main.objects.get(ID = Good.userid).username
 		result["credit"] = release.score
 		if Userheadshot.objects.filter(userID = Good.userid).exists()==True:
 			result["avatar"] = Userheadshot.objects.get(userID = Good.userid).headshot.url

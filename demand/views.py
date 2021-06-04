@@ -140,7 +140,7 @@ def demandinfo(request):
 			result["imageUrls"] = ["NULL"]
 		
 		release = UserInfo.objects.get(userID = Demand.userid)
-		result["name"] = Main.objects.get(ID = Demand.userid)
+		result["name"] = Main.objects.get(ID = Demand.userid).username
 		result["credit"] = release.score
 		if Userheadshot.objects.filter(userID = Demand.userid).exists()==True:
 			result["avatar"] = Userheadshot.objects.get(userID = Demand.userid).headshot.url
@@ -155,7 +155,7 @@ def demandinfo(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
-def allgood(request):
+def alldemand(request):
 	if request.method == 'POST':
 		result = {'result': 1, 'message': '获取成功!'}
 		all = DemandInfo.objects.all()
@@ -164,13 +164,13 @@ def allgood(request):
 			d = {}
 			d["id"] = i.demandid
 			d["price"] = i.price
-			d["name"] = i.goodname
+			d["name"] = i.demandname
 			if DImg.objects.filter(demandid = i.demandid).exists() == True:
 				imgs = DImg.objects.filter(demandid = i.demandid)
 				d["urls"] = (MEDIA_SERVER + imgs[0].img.url)
 			else:
 				d["urls"] = "NULL"
-			
+
 			demand.append(d)
 		result["demand"] = demand
 		return HttpResponse(json.dumps(result), content_type="application/json")

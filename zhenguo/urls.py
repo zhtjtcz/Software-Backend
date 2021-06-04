@@ -57,6 +57,7 @@ urlpatterns = [
 	path('demand/collect/', demandcollect, name='demandcollect'),
 	path('demand/uncollect/', demanduncollect, name='demanduncollect'),
 	path('demand/demandinfo/', demandinfo, name='demandinfo'),
+	path('demand/alldemand/', alldemand, name='alldemand'),
 
 	path('message/reply/', reply, name='reply'),
 	path('message/getreply/', getreply, name='getreply'),
