@@ -9,6 +9,8 @@ from user.models import *
 from trade.models import *
 from demand.models import *
 from good.models import *
+from inform.models import *
+from inform.views import *
 import datetime
 import traceback
 # Create your views here.
@@ -32,7 +34,7 @@ def apply(request):
 		trade = Trade(ID = len(Trade.objects.all()), objectID = objectID, type =  type,
 			requestID = id, ownID = own, status = 0, score = 0.0)
 		trade.save()
-		# TODO send a info
+		SendInfo(own, 1, "有用户申请与您交易,请到商品详情页查看.")
 		result = {'result': 1, 'message': '申请成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -57,7 +59,10 @@ def confirm(request):
 		confirm = int(data_json.get('confirm'))
 
 		apply.status = confirm
-		# TODO confirm info
+		if confirm == True:
+			SendInfo(apply.requestID, 2, "您的交易请求已被确认,对方微信为"+ Main.objects.get(ID = apply.ownID).wxid +",请尽快完成交易并评分")
+		else:
+			SendInfo(apply.requestID, 2, "您的交易请求已被拒绝.")
 		apply.save()
 
 		result = {'result': 1, 'message': '成功!'}
@@ -97,6 +102,7 @@ def applylist(request):
 		for i in alltarde:
 			d = {}
 			d["name"] = Main.objects.get(ID = i.requestID).username
+			d["userid"] = Main.objects.get(ID = i.requestID).ID
 			d["id"] = i.ID
 			apply.append(d)
 

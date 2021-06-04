@@ -8,3 +8,4 @@ class Inform(models.Model):
 	userid = models.IntegerField()
 	text = models.CharField(max_length = 100)
 	isread = models.BooleanField()
+	score = models.BooleanField()
