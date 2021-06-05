@@ -14,10 +14,13 @@ import datetime
 import traceback
 # Create your views here.
 
-def SendInfo(userid, type, text):
+def SendInfo(userid, type, text, ID = -1):
 	ID = len(Inform.objects.all())
 	inform = Inform(ID = ID, type = type, text = text, userid = userid, isread = False, score = False)
 	inform.save()
+	if ID != -1:
+		score = Score(applyid = ID, informid = inform.ID)
+		score.save()
 
 @csrf_exempt
 def infolist(request):
@@ -50,11 +53,32 @@ def infolist(request):
 def info(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
-		id = data_json.get('id')
+		id = int(data_json.get('id'))
 		info = Inform.objects.get(ID = id)
 		trans = ["留言回复通知", "交易申请通知", "交易完成通知", "商品封禁通知"]
 		
-		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.texts, "type":info.type}
+		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.texts, 
+			"type":info.type, 'score': info.score}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def makescore(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		infoid = int(data_json.get('infoid'))
+		s = float(data_json.get('score'))
+		info = Inform.objects.get(ID = infoid)
+		info.score = True
+		info.save()
+		score = Score.objects.get(informid = infoid)
+		apply = Trade.objects.get(ID = score.applyid)
+		apply.score = s
+		apply.save()
+
+		result = {'result': 1, 'message': '成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

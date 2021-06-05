@@ -24,6 +24,9 @@ def apply(request):
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
+		if Main.objects.get(ID = id).wxid == "":
+			result = {'result': 0, 'message': '您还未填写微信号,请填写微信号后再申请交易!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
 		type = int(data_json.get('type'))
 		objectID = int(data_json.get('objectid'))
 		if type == 0:
@@ -62,7 +65,10 @@ def confirm(request):
 
 		apply.status = confirm
 		if confirm == True:
-			SendInfo(apply.requestID, 2, "您的交易请求已被确认,对方微信为"+ Main.objects.get(ID = apply.ownID).wxid +",请尽快完成交易并评分")
+			if apply.type == 0:
+				SendInfo(apply.requestID, 2, "您的交易请求已被确认,对方微信为"+ Main.objects.get(ID = apply.ownID).wxid +",请尽快完成交易,并在完成后进行评分.", apply.ID)
+			else:
+				SendInfo(apply.ownID, 2, "交易请求已确认,对方微信为"+ Main.objects.get(ID = apply.requestID).wxid +",请尽快完成交易,并在完成后进行评分.", apply.ID)
 		else:
 			SendInfo(apply.requestID, 2, "您的交易请求已被拒绝.")
 		apply.save()

@@ -9,3 +9,7 @@ class Inform(models.Model):
 	text = models.CharField(max_length = 100)
 	isread = models.BooleanField()
 	score = models.BooleanField()
+
+class Score(models.Model):
+	applyid = models.IntegerField()
+	infromid = models.IntegerField()

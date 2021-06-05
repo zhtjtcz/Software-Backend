@@ -28,3 +28,6 @@ class UserInfo(models.Model):
 class UserFollow(models.Model):
 	userID = models.IntegerField()
 	followID = models.IntegerField()
+
+class BanInfo(models.Model):
+	userID = models.IntegerField(primary_key = True)

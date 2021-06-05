@@ -2,6 +2,7 @@ from django.shortcuts import render
 from user.models import *
 from good.models import *
 from demand.models import *
+from trade.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -68,7 +69,13 @@ def login(request):
 					token = str(token)
 					token = token[1:]
 					request.session['token'] = token
-					result = {'result': 1, 'message': '登录成功!', 'token': token}
+					result = {'result': 1, 'message': '登录成功!', 'token': token, 'level': 1}
+					if user.ID == 0:
+						result['level'] = -1
+					# Is Administrator
+					elif BanInfo.objects.get(userID = user.ID):
+						result['level'] = 0
+					# User has been banned
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了'}
@@ -128,6 +135,28 @@ def uploadimg(request):
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
+def Update(id):
+	User = Main.objects.get(ID = id)
+	sell = Trade.objects.get(ownID = id)
+	Sell = Trade.objects.get(requestID = id)
+	ans = 0
+	cnt = 0
+	for i in sell:
+		if i.score !=0:
+			ans+=i.score
+			cnt+=1
+	for i in Sell:
+		if i.score !=0:
+			ans+=i.score
+			cnt+=1
+	if cnt == 0:
+		User.score = 5.0
+		User.save()
+	else:
+		User.score = ans/cnt
+		User.save()
+# Update a user's score
+
 @csrf_exempt
 def getuser(request):
 	if request.method == 'POST':
@@ -137,6 +166,7 @@ def getuser(request):
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
+		Update(id)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
 		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'url': 'NULL', 'score': more.score}
@@ -316,6 +346,28 @@ def demandcollectlist(request):
 			else:
 				url.append('NULL')
 		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def ban(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('id')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		banid = int(data_json.get('id'))
+		if BanInfo.objects.filter(userID = id).exists():
+			ban = BanInfo.objects.filter(userID = id)
+			ban.delete()
+		else:
+			ban = BanInfo(userID = id)
+			ban.save()
+		result = {'result': 1, 'message': '成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

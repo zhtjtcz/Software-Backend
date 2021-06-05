@@ -23,6 +23,8 @@ def reply(request):
 		msg = Msg(ID=len(Msg.objects.all()), objectID=int(data_json.get('objectid')), type=int(data_json.get('type')),
 			sendID=id, replyID=int(data_json.get('reply')), text=data_json.get('text'), sendtime=str(datetime.datetime.now()))
 		msg.save()
+		if int(data_json.get('reply')) != -1:
+			pass
 		result = {'result': 1, 'message': '留言成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
