@@ -115,3 +115,31 @@ def applylist(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def tradehistory(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		history = []
+		if Trade.objects.filter(ownID = id).exists() == True:
+			trade = Trade.objects.filter(ownID = id).exists()
+			for i in trade:
+				d = {"objectid": i.objectID, "type": i.type, "score": i.score}
+				history.append(d)
+		if Trade.objects.filter(requestID = id).exists() == True:
+			trade = Trade.objects.filter(requestID = id).exists()
+			for i in trade:
+				d = {"objectid": i.objectID, "type": i.type, "score": i.score}
+				history.append(d)
+		if history == []:
+			history.append("NULL")
+		result = {'result': 1, 'message': '成功!', 'history': history}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")

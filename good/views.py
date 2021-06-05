@@ -20,7 +20,7 @@ def getcategory(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		category = Category.objects.all()
-		l = [i.name for i in category]
+		l = [i.category for i in category]
 		result = {'result': 1, 'sum': len(l), 'category': l}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
