@@ -20,7 +20,7 @@ def SendInfo(userid, type, text):
 	inform.save()
 
 @csrf_exempt
-def Infolist(request):
+def infolist(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
@@ -47,21 +47,14 @@ def Infolist(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
-def Infolist(request):
+def info(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
-		token = data_json.get('token')
-		id = Check(token)
-		if id==-1:
-			result = {'result': 0, 'message': 'Token有误!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
-
+		id = data_json.get('id')
+		info = Inform.objects.get(ID = id)
 		trans = ["留言回复通知", "交易申请通知", "交易完成通知", "商品封禁通知"]
-		informid = int(data_json.get('infoid'))
-		inform = Inform.objects.get(ID = informid)
-		inform.isread = True
-		result = {'result': 1, 'message': '获取成功!', "id": informid, "title": trans[inform.type], 
-			"text": inform.texts, "score": inform.score}
+		
+		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.texts, "type":info.type}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

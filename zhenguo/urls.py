@@ -25,6 +25,7 @@ from good.views import *
 from demand.views import *
 from message.views import *
 from trade.views import *
+from inform.views import *
 from django.views import static
 
 urlpatterns = [
@@ -65,6 +66,9 @@ urlpatterns = [
 	path('trade/apply/', apply, name='apply'),
 	path('trade/confirm/', confirm, name='confirm'),
 	path('trade/applylist/', applylist, name='applylist'),
+
+	path('inform/infolist/', infolist, name='infolist'),
+	path('inform/info/', info, name='info'),
 
 	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from demand.models import *
 from user.models import *
+from trade.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -121,6 +122,15 @@ def demanduncollect(request):
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
+def CanTrade(demandid, id):
+	if id == -1:
+		return False
+	if Trade.objects.filter(objectID = demandid, type = 1, ownID = id).exists():
+		return False
+	if Trade.objects.filter(objectID = demandid, type = 1, requestID = id).exists():
+		return False
+	return True
+
 @csrf_exempt
 def demandinfo(request):
 	if request.method == 'POST':
@@ -133,6 +143,10 @@ def demandinfo(request):
 		result["description"] = Demand.description
 		result["isSold"] = Demand.onsale
 		result["date"] = Demand.uploadtime[:19]
+		if data_json.get('token')==None:
+			result["canTrade"] = False
+		else:	
+			result["canTrade"] = CanTrade(demandid, Check(data_json.get("token")))
 		if DImg.objects.filter(demandid = demandid).exists() == True:
 			imgs = DImg.objects.filter(demandid = demandid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]

@@ -2,6 +2,7 @@ from django.db import reset_queries
 from django.shortcuts import render
 from good.models import *
 from user.models import *
+from trade.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -133,6 +134,15 @@ def gooduncollect(request):
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
+def CanTrade(goodid, id):
+	if id == -1:
+		return False
+	if Trade.objects.filter(objectID = goodid, type = 0, ownID = id).exists():
+		return False
+	if Trade.objects.filter(objectID = goodid, type = 0, requestID = id).exists():
+		return False
+	return True
+
 @csrf_exempt
 def goodinfo(request):
 	if request.method == 'POST':
@@ -145,6 +155,10 @@ def goodinfo(request):
 		result["description"] = Good.description
 		result["isSold"] = Good.onsale
 		result["date"] = Good.uploadtime[:19]
+		if data_json.get('token')==None:
+			result["canTrade"] = False
+		else:	
+			result["canTrade"] = CanTrade(goodid, Check(data_json.get("token")))
 		if GImg.objects.filter(goodid = goodid).exists() == True:
 			imgs = GImg.objects.filter(goodid = goodid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]

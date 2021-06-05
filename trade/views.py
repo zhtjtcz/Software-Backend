@@ -30,8 +30,10 @@ def apply(request):
 			own = GoodInfo.objects.get(goodid = objectID).userid
 		else:
 			own = DemandInfo.objects.get(demandid = objectID).userid
-		
-		trade = Trade(ID = len(Trade.objects.all()), objectID = objectID, type =  type,
+		if Trade.objects.filter(objectID = objectID, type = type,requestID = id, ownID = own).exists() == True:
+			result = {'result': 0, 'message': '不能重复申请!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		trade = Trade(ID = len(Trade.objects.all()), objectID = objectID, type = type,
 			requestID = id, ownID = own, status = 0, score = 0.0)
 		trade.save()
 		SendInfo(own, 1, "有用户申请与您交易,请到商品详情页查看.")
