@@ -25,7 +25,7 @@ def apply(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		type = int(data_json.get('type'))
-		objectID = int(data_json.get('objectID'))
+		objectID = int(data_json.get('objectid'))
 		if type == 0:
 			own = GoodInfo.objects.get(goodid = objectID).userid
 		else:
@@ -81,7 +81,7 @@ def applylist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		type = int(data_json.get('type'))
-		objectID = int(data_json.get('objectID'))
+		objectID = int(data_json.get('objectid'))
 
 		if type == 0:
 			own = GoodInfo.objects.get(goodid = objectID)
@@ -100,6 +100,8 @@ def applylist(request):
 		apply = []
 
 		for i in alltarde:
+			if i.status != 0:
+				continue
 			d = {}
 			d["name"] = Main.objects.get(ID = i.requestID).username
 			d["userid"] = Main.objects.get(ID = i.requestID).ID

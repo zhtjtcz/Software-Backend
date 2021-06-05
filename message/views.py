@@ -32,7 +32,7 @@ def reply(request):
 def GetReplyInfo(i):
 	d = {"text":i.text, "sendtime":i.sendtime[:16]}
 	d["username"] = Main.objects.get(ID = i.sendID).username
-	d["url"] = Userheadshot.objects.get(userID = i.sendID).headshot.url
+	d["url"] = MEDIA_SERVER + Userheadshot.objects.get(userID = i.sendID).headshot.url
 	d["id"] = i.ID
 	return d
 

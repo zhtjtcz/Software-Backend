@@ -144,7 +144,7 @@ def goodinfo(request):
 		result["price"] = Good.price
 		result["description"] = Good.description
 		result["isSold"] = Good.onsale
-		result["date"] = Good.uploadtime
+		result["date"] = Good.uploadtime[:19]
 		if GImg.objects.filter(goodid = goodid).exists() == True:
 			imgs = GImg.objects.filter(goodid = goodid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
@@ -155,7 +155,7 @@ def goodinfo(request):
 		result["name"] = Main.objects.get(ID = Good.userid).username
 		result["credit"] = release.score
 		if Userheadshot.objects.filter(userID = Good.userid).exists()==True:
-			result["avatar"] = Userheadshot.objects.get(userID = Good.userid).headshot.url
+			result["avatar"] = MEDIA_SERVER + Userheadshot.objects.get(userID = Good.userid).headshot.url
 		else:
 			result["avatar"] = "NULL"
 

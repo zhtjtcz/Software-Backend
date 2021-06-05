@@ -132,7 +132,7 @@ def demandinfo(request):
 		result["price"] = Demand.price
 		result["description"] = Demand.description
 		result["isSold"] = Demand.onsale
-		result["date"] = Demand.uploadtime
+		result["date"] = Demand.uploadtime[:19]
 		if DImg.objects.filter(demandid = demandid).exists() == True:
 			imgs = DImg.objects.filter(demandid = demandid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
@@ -143,7 +143,7 @@ def demandinfo(request):
 		result["name"] = Main.objects.get(ID = Demand.userid).username
 		result["credit"] = release.score
 		if Userheadshot.objects.filter(userID = Demand.userid).exists()==True:
-			result["avatar"] = Userheadshot.objects.get(userID = Demand.userid).headshot.url
+			result["avatar"] = MEDIA_SERVER + Userheadshot.objects.get(userID = Demand.userid).headshot.url
 		else:
 			result["avatar"] = "NULL"
 
