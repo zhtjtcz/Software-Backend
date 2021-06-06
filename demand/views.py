@@ -41,9 +41,8 @@ def dupload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')
 		demandid = int(request.META.get('HTTP_AUTHORIZATION'))
-		demangid = request.META.get('HTTP_ID')
 		if source:
-			image = DImg(imgid=len(DImg.objects.all()), demangid=demangid, img=source)
+			image = DImg(imgid=len(DImg.objects.all()), demandid=demandid, img=source)
 			image.save()
 			return HttpResponse(json.dumps({'success': True,'path': MEDIA_SERVER + image.img.url, 'url':image.img.url}))
 	else:
@@ -72,7 +71,7 @@ def getdemand(request):
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
 				url.append('NULL')
-		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url}
+		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url, 'id':id}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -141,7 +140,7 @@ def demandinfo(request):
 		result["title"] = Demand.demandname
 		result["price"] = Demand.price
 		result["description"] = Demand.description
-		result["isSold"] = Demand.onsale
+		result["isSold"] = 1 - Demand.onsale
 		result["date"] = Demand.uploadtime[:19]
 		if data_json.get('token')==None:
 			result["canTrade"] = False

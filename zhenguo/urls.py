@@ -69,6 +69,9 @@ urlpatterns = [
 
 	path('inform/infolist/', infolist, name='infolist'),
 	path('inform/info/', info, name='info'),
+	path('inform/scoring/', makescore, name='scoring'),
+
+	path('ban/user/', ban, name='ban'),
 
 	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})

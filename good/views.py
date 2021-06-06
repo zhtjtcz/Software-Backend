@@ -153,7 +153,7 @@ def goodinfo(request):
 		result["title"] = Good.goodname
 		result["price"] = Good.price
 		result["description"] = Good.description
-		result["isSold"] = Good.onsale
+		result["isSold"] = 1 - Good.onsale
 		result["date"] = Good.uploadtime[:19]
 		if data_json.get('token')==None:
 			result["canTrade"] = False

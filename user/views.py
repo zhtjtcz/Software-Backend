@@ -73,7 +73,7 @@ def login(request):
 					if user.ID == 0:
 						result['level'] = -1
 					# Is Administrator
-					elif BanInfo.objects.get(userID = user.ID):
+					elif BanInfo.objects.filter(userID = user.ID).exists() == True:
 						result['level'] = 0
 					# User has been banned
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -137,8 +137,8 @@ def uploadimg(request):
 
 def Update(id):
 	User = Main.objects.get(ID = id)
-	sell = Trade.objects.get(ownID = id)
-	Sell = Trade.objects.get(requestID = id)
+	sell = Trade.objects.filter(type = 0, ownID = id)
+	Sell = Trade.objects.filter(type = 1, requestID = id)
 	ans = 0
 	cnt = 0
 	for i in sell:
@@ -149,7 +149,7 @@ def Update(id):
 		if i.score !=0:
 			ans+=i.score
 			cnt+=1
-	if cnt == 0:
+	if cnt < 1:
 		User.score = 5.0
 		User.save()
 	else:
@@ -210,6 +210,7 @@ def getinfo(request):
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
+		Update(id)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
 		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
@@ -355,17 +356,12 @@ def demandcollectlist(request):
 def ban(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
-		token = data_json.get('id')
-		id = Check(token)
-		if id==-1:
-			result = {'result': 0, 'message': 'Token有误!'}
-			return HttpResponse(json.dumps(result), content_type="application/json")
 		banid = int(data_json.get('id'))
-		if BanInfo.objects.filter(userID = id).exists():
-			ban = BanInfo.objects.filter(userID = id)
+		if BanInfo.objects.filter(userID = banid).exists():
+			ban = BanInfo.objects.filter(userID = banid)
 			ban.delete()
 		else:
-			ban = BanInfo(userID = id)
+			ban = BanInfo(userID = banid)
 			ban.save()
 		result = {'result': 1, 'message': '成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
