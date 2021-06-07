@@ -121,9 +121,10 @@ def uploadimg(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		source = request.FILES.get('file')
 		if source:
-			if Userheadshot.objects.filter(userID =id).exists()==True:
+			if Userheadshot.objects.filter(userID =id).exists() == True:
 				image = Userheadshot.objects.get(userID = id)
 				image.headshot = source
+				image.save()
 			else:
 				image = Userheadshot(userID=id, headshot=source)
 				image.save()
@@ -286,7 +287,7 @@ def followlist(request):
 		for i in personlist:
 			if Userheadshot.objects.filter(userID = i.userID).exists() == True:
 				imgs = Userheadshot.objects.get(userID = i.userID)
-				url.append(MEDIA_SERVER + imgs.img.url)
+				url.append(MEDIA_SERVER + imgs.headshot.url)
 			else:
 				url.append('NULL')
 		result = {'result': 1, 'message': '获取成功!', 'name': name, 'grade': grade, 'location': location, 'url':url, 'score': score}
