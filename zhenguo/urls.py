@@ -42,6 +42,8 @@ urlpatterns = [
 	path('user/getuser/', getuser, name='getuser'),
 	path('user/uploadinfo/', uploadinfo, name='uploadinfo'),
 	path('user/followlist/', followlist, name='followlist'),
+	path('user/getlevel/', getlevel, name='getlevel'),
+	path('user/isban/', isban, name='isban'),
 
 	path('good/upload/', creategood, name='upload'),
 	path('good/uploadimg/', upload, name='gimgupload'),

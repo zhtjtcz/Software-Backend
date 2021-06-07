@@ -65,17 +65,18 @@ def login(request):
 					result = {'result': 0, 'message': '密码不正确!'}
 				else:
 					request.session['username'] = username
-					token = GetToken(username)
-					token = str(token)
-					token = token[1:]
-					request.session['token'] = token
-					result = {'result': 1, 'message': '登录成功!', 'token': token, 'level': 1}
+					result = {'result': 1, 'message': '登录成功!', 'level': 1}
 					if user.ID == 0:
 						result['level'] = -1
 					# Is Administrator
 					elif BanInfo.objects.filter(userID = user.ID).exists() == True:
 						result['level'] = 0
 					# User has been banned
+					token = GetToken(username, result['level'])
+					token = str(token)
+					token = token[1:]
+					request.session['token'] = token
+					result['token'] = token
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了'}
@@ -364,6 +365,37 @@ def ban(request):
 			ban = BanInfo(userID = banid)
 			ban.save()
 		result = {'result': 1, 'message': '成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def getlevel(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		level = TokenLevel(token)
+		result = {'result': 1, 'message': '成功!', 'level':level}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def isban(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		id = int(data_json.get('id'))
+		if BanInfo.objects.filter(userID = id).exists() == True:
+			result = {'result': 1, 'message': '成功!', 'isban':True}
+		else:
+			result = {'result': 1, 'message': '成功!', 'isban':False}
+
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
