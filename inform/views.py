@@ -32,7 +32,7 @@ def infolist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 
-		trans = ["留言回复通知", "交易申请通知", "交易完成通知", "商品封禁通知"]
+		trans = ["留言回复通知", "交易申请通知", "交易申请回复通知", "商品封禁通知"]
 		ans = []
 		
 		if Inform.objects.filter(userid = id).exists() == False:
@@ -55,7 +55,8 @@ def info(request):
 		data_json = json.loads(request.body)
 		id = int(data_json.get('id'))
 		info = Inform.objects.get(ID = id)
-		trans = ["留言回复通知", "交易申请通知", "交易完成通知", "商品封禁通知"]
+		info.isread = True
+		trans = ["留言回复通知", "交易申请通知", "交易申请回复通知", "商品封禁通知"]
 		
 		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.text, 
 			"type":info.type, 'score': info.score}

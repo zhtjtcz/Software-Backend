@@ -31,15 +31,17 @@ def apply(request):
 		objectID = int(data_json.get('objectid'))
 		if type == 0:
 			own = GoodInfo.objects.get(goodid = objectID).userid
+			name = GoodInfo.objects.get(goodid = objectID).goodname
 		else:
 			own = DemandInfo.objects.get(demandid = objectID).userid
+			name = DemandInfo.objects.get(demandid = objectID).demandname
 		if Trade.objects.filter(objectID = objectID, type = type,requestID = id, ownID = own).exists() == True:
 			result = {'result': 0, 'message': '不能重复申请!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		trade = Trade(ID = len(Trade.objects.all()), objectID = objectID, type = type,
 			requestID = id, ownID = own, status = 0, score = 0.0)
 		trade.save()
-		SendInfo(own, 1, "有用户申请与您交易,请到商品详情页查看.")
+		SendInfo(own, 1, "有用户申请与您上架的" + name + "进行交易,请到详情页查看并及时确认.")
 		result = {'result': 1, 'message': '申请成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -64,7 +66,7 @@ def confirm(request):
 		confirm = int(data_json.get('confirm'))
 
 		apply.status = confirm
-		if confirm == True:
+		if confirm == 1:
 			if apply.type == 0:
 				SendInfo(apply.requestID, 2, "您的交易请求已被确认,对方微信为"+ Main.objects.get(ID = apply.ownID).wxid +",请尽快完成交易,并在完成后进行评分.", apply.ID)
 			else:
