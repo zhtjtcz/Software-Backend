@@ -132,13 +132,13 @@ def tradehistory(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		history = []
-		if Trade.objects.filter(ownID = id).exists() == True:
-			trade = Trade.objects.filter(ownID = id).exists()
+		if Trade.objects.filter(type = 0, ownID = id, status = 1).exists() == True:
+			trade = Trade.objects.filter(type = 0, ownID = id, status = 1)
 			for i in trade:
 				d = {"objectid": i.objectID, "type": i.type, "score": i.score}
 				history.append(d)
-		if Trade.objects.filter(requestID = id).exists() == True:
-			trade = Trade.objects.filter(requestID = id).exists()
+		if Trade.objects.filter(type = 1, requestID = id, status = 1).exists() == True:
+			trade = Trade.objects.filter(type = 1, requestID = id, status = 1)
 			for i in trade:
 				d = {"objectid": i.objectID, "type": i.type, "score": i.score}
 				history.append(d)

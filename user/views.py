@@ -209,19 +209,41 @@ def getinfo(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token', 0)
 		id = Check(token)
-		if int(data_json.get('id', -1)) != -1:
-			id = int(data_json.get('id', -1))
-		if id==-1:
+		if int(data_json.get('id', -10)) != -1:
+			Id = int(data_json.get('id', -10))
+		
+		'''
+		token = -1, Id = -1		-> Error
+		token = -1, Id != -1	-> Other
+		token = Id > 0			-> Self
+		token > 0, Id = -1		-> Self
+		Id = -10				-> Self
+		'''
+
+		if (id==-1 and Id==-10) or (id==-1 and Id==-1):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-		Update(id)
-		base = Main.objects.get(ID = id)
-		more = UserInfo.objects.get(userID = id)
-		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
-			'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location}
-		if base.wxid=="":
-			result['wxid'] = -1
-		return HttpResponse(json.dumps(result), content_type="application/json")
+		if Id == -10 or (id > 0 and Id == -1) or id == Id:
+			Update(id)
+			base = Main.objects.get(ID = id)
+			more = UserInfo.objects.get(userID = id)
+			result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
+				'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location}
+			result['self'] = True
+			if base.wxid=="":
+				result['wxid'] = -1
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			id = Id
+			Update(id)
+			base = Main.objects.get(ID = id)
+			more = UserInfo.objects.get(userID = id)
+			result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'email': base.email, 'wxid': base.wxid,
+				'sex': more.sex, 'grade': more.grade, 'telephone': more.telephone, 'location': more.location}
+			result['self'] = False
+			if base.wxid=="":
+				result['wxid'] = -1
+			return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
