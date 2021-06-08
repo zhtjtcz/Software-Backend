@@ -76,6 +76,8 @@ urlpatterns = [
 
 	path('ban/user/', ban, name='ban'),
 
+	path('search/', search, name='search'),
+
 	path('admin/', admin.site.urls),
 	url(r'^img/(?P<path>.*)$', static.serve,{'document_root': settings.MEDIA_ROOT})
 ]

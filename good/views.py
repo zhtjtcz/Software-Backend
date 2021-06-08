@@ -3,6 +3,7 @@ from django.shortcuts import render
 from good.models import *
 from user.models import *
 from trade.models import *
+from demand.models import *
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -201,6 +202,44 @@ def allgood(request):
 			
 			good.append(d)
 		result["good"] = good
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def search(request):
+	if request.method == 'POST':
+		result = {'result': 1, 'message': '搜索成功!'}
+
+		data_json = json.loads(request.body)
+		type = int(data_json.get('type'))
+		key = data_json.get('key')
+		object = []
+		print(key)
+		if type == 0:
+			good = GoodInfo.objects.filter(goodname__icontains = key)
+			for i in good:
+				if i.onsale == False:
+					continue
+				d = {'id': i.goodid, 'name': i.goodname, 'type': 0, 'price': i.price}
+				if GImg.objects.filter(goodid = i.goodid).exists() == True:
+					imgs = GImg.objects.filter(goodid = i.goodid)
+					d['imageUrls'] = MEDIA_SERVER + imgs[0].img.url
+				object.append(d)
+		else:
+			demand = DemandInfo.objects.filter(demandname__icontains = key)
+			for i in demand:
+				if i.onsale == False:
+					continue
+				d = {'id': i.demandid, 'name': i.demandname, 'type': 0, 'price': i.price}
+				if DImg.objects.filter(demandid = i.demandid).exists() == True:
+					imgs = DImg.objects.filter(demandid = i.demandid)
+					d['imageUrls'] = MEDIA_SERVER + imgs[0].img.url
+				object.append(d)
+		# Search object by given id
+		result['len'] = len(object)
+		result['object'] = object
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
