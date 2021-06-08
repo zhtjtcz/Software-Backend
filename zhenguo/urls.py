@@ -68,6 +68,7 @@ urlpatterns = [
 	path('trade/apply/', apply, name='apply'),
 	path('trade/confirm/', confirm, name='confirm'),
 	path('trade/applylist/', applylist, name='applylist'),
+	path('trade/history/', tradehistory, name='history'),
 
 	path('inform/infolist/', infolist, name='infolist'),
 	path('inform/info/', info, name='info'),

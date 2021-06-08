@@ -55,6 +55,8 @@ def getdemand(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
+		if int(data_json.get('id', -1)) != -1:
+			id = int(data_json.get('id', -1))
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")

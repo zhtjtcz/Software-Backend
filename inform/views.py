@@ -38,7 +38,7 @@ def infolist(request):
 		if Inform.objects.filter(userid = id).exists() == False:
 			result = {'result': 1, 'message': '获取成功!', "inform":["NULL"]}
 		else:
-			inform = Inform.objects.filter(userid = id).exists()
+			inform = Inform.objects.filter(userid = id)
 			for i in inform:
 				d = {"id":i.ID, "name":trans[i.type], "isread":i.isread}
 				ans.append(d)
@@ -57,7 +57,7 @@ def info(request):
 		info = Inform.objects.get(ID = id)
 		trans = ["留言回复通知", "交易申请通知", "交易完成通知", "商品封禁通知"]
 		
-		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.texts, 
+		result = {'result': 1, 'message': '获取成功!', "name": trans[info.type], "text": info.text, 
 			"type":info.type, 'score': info.score}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:

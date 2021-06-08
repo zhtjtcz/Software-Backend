@@ -12,4 +12,4 @@ class Inform(models.Model):
 
 class Score(models.Model):
 	applyid = models.IntegerField()
-	infromid = models.IntegerField()
+	informid = models.IntegerField()
