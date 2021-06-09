@@ -34,7 +34,11 @@ def reply(request):
 def GetReplyInfo(i):
 	d = {"text":i.text, "sendtime":i.sendtime[:16]}
 	d["username"] = Main.objects.get(ID = i.sendID).username
-	d["url"] = MEDIA_SERVER + Userheadshot.objects.get(userID = i.sendID).headshot.url
+	if Userheadshot.objects.filter(userID = i.sendID).exists() == False:
+		d['url'] = 'https://z3.ax1x.com/2021/06/09/2cTNY4.png'
+	else:
+		d["url"] = MEDIA_SERVER + Userheadshot.objects.get(userID = i.sendID).headshot.url
+
 	d["id"] = i.ID
 	return d
 

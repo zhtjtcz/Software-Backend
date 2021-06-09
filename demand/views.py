@@ -72,7 +72,7 @@ def getdemand(request):
 				imgs = DImg.objects.filter(demandid = i.demandid)
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
-				url.append('NULL')
+				url.append('https://z3.ax1x.com/2021/06/09/2cqBCD.png')
 		result = {'result': 1, 'message': '获取成功!', 'name':name, 'description':description, 'price':price, 'url':url, 'id':id}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -152,7 +152,7 @@ def demandinfo(request):
 			imgs = DImg.objects.filter(demandid = demandid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
 		else:
-			result["imageUrls"] = ["NULL"]
+			result["imageUrls"] = ["https://z3.ax1x.com/2021/06/09/2cqBCD.png"]
 		
 		release = UserInfo.objects.get(userID = Demand.userid)
 		result["name"] = Main.objects.get(ID = Demand.userid).username
@@ -160,7 +160,7 @@ def demandinfo(request):
 		if Userheadshot.objects.filter(userID = Demand.userid).exists()==True:
 			result["avatar"] = MEDIA_SERVER + Userheadshot.objects.get(userID = Demand.userid).headshot.url
 		else:
-			result["avatar"] = "NULL"
+			result["avatar"] = "https://z3.ax1x.com/2021/06/09/2cTNY4.png"
 
 		result["result"] = 1
 		result["message"] = "查询成功"
@@ -184,7 +184,7 @@ def alldemand(request):
 				imgs = DImg.objects.filter(demandid = i.demandid)
 				d["urls"] = (MEDIA_SERVER + imgs[0].img.url)
 			else:
-				d["urls"] = "NULL"
+				d["urls"] = "https://z3.ax1x.com/2021/06/09/2cqBCD.png"
 
 			demand.append(d)
 		result["demand"] = demand

@@ -171,7 +171,7 @@ def getuser(request):
 		Update(id)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
-		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'url': 'NULL', 'score': more.score}
+		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'url': 'https://z3.ax1x.com/2021/06/09/2cTNY4.png', 'score': more.score}
 		if Userheadshot.objects.filter(userID = id).exists()==True:
 			result['url']=MEDIA_SERVER + Userheadshot.objects.get(userID = id).headshot.url
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -313,7 +313,7 @@ def followlist(request):
 				imgs = Userheadshot.objects.get(userID = i.userID)
 				url.append(MEDIA_SERVER + imgs.headshot.url)
 			else:
-				url.append('NULL')
+				url.append('https://z3.ax1x.com/2021/06/09/2cTNY4.png')
 		result = {'result': 1, 'message': '获取成功!', 'name': name, 'grade': grade, 'location': location, 'url':url, 'score': score}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -342,7 +342,7 @@ def goodcollectlist(request):
 				imgs = GImg.objects.filter(goodid = i.goodid)
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
-				url.append('NULL')
+				url.append('https://z3.ax1x.com/2021/06/09/2cqBCD.png')
 		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -371,7 +371,7 @@ def demandcollectlist(request):
 				imgs = DImg.objects.filter(demandid = i.demandid)
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
-				url.append('NULL')
+				url.append('https://z3.ax1x.com/2021/06/09/2cqBCD.png')
 		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:

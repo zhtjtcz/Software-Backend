@@ -86,7 +86,7 @@ def getgood(request):
 				imgs = GImg.objects.filter(goodid = i.goodid)
 				url.append(MEDIA_SERVER + imgs[0].img.url)
 			else:
-				url.append('NULL')
+				url.append('https://z3.ax1x.com/2021/06/09/2cqBCD.png')
 		result = {'result': 1, 'message': '获取成功!', 'id':id, 'name':name, 'description':description, 'price':price, 'url':url}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -166,7 +166,7 @@ def goodinfo(request):
 			imgs = GImg.objects.filter(goodid = goodid)
 			result["imageUrls"] = [(MEDIA_SERVER + i.img.url) for i in imgs]
 		else:
-			result["imageUrls"] = ["NULL"]
+			result["imageUrls"] = ["https://z3.ax1x.com/2021/06/09/2cqBCD.png"]
 		
 		release = UserInfo.objects.get(userID = Good.userid)
 		result["name"] = Main.objects.get(ID = Good.userid).username
@@ -174,7 +174,7 @@ def goodinfo(request):
 		if Userheadshot.objects.filter(userID = Good.userid).exists()==True:
 			result["avatar"] = MEDIA_SERVER + Userheadshot.objects.get(userID = Good.userid).headshot.url
 		else:
-			result["avatar"] = "NULL"
+			result["avatar"] = "https://z3.ax1x.com/2021/06/09/2cTNY4.png"
 
 		result["result"] = 1
 		result["message"] = "查询成功"
@@ -198,7 +198,7 @@ def allgood(request):
 				imgs = GImg.objects.filter(goodid = i.goodid)
 				d["urls"] = (MEDIA_SERVER + imgs[0].img.url)
 			else:
-				d["urls"] = "NULL"
+				d["urls"] = "https://z3.ax1x.com/2021/06/09/2cqBCD.png"
 			
 			good.append(d)
 		result["good"] = good
