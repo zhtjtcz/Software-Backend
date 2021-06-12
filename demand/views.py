@@ -47,7 +47,7 @@ def updatedemand(request):
 		newdemand.categoryid = int(data_json.get('category'))
 		newdemand.price = float(data_json.get('price'))
 		newdemand.save()
-		result = {'result': 1, 'message': '更新成功!', 'id': newdemand.demandid}
+		result = {'result': 1, 'message': '修改成功!', 'id': newdemand.demandid}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
@@ -193,6 +193,8 @@ def alldemand(request):
 		all = DemandInfo.objects.all()
 		demand = []
 		for i in all:
+			if i.onsale == False:
+				return
 			d = {}
 			d["id"] = i.demandid
 			d["price"] = i.price

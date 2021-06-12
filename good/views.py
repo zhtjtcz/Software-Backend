@@ -208,6 +208,8 @@ def allgood(request):
 		all = GoodInfo.objects.all()
 		good = []
 		for i in all:
+			if i.onsale == False:
+				continue
 			d = {}
 			d["id"] = i.goodid
 			d["price"] = i.price
@@ -280,6 +282,26 @@ def report(request):
 		else:
 			Demand = GoodInfo.objects.get(demandid = id)
 			SendInfo(0, 4, "需求名为" + Demand.demandname + "的需求被举报,请及时检查其是否有违规信息" )
+		result = {'result': 1, 'message': '举报成功!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+
+@csrf_exempt
+def delete(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		id = int (data_json.get('id'))
+		type = int(data_json.get('type'))
+		if type == 0:
+			Good = GoodInfo.objects.get(goodid = id)
+			Good.onsale = False
+		else:
+			Demand = GoodInfo.objects.get(demandid = id)
+			Demand.onsale = False
 		result = {'result': 1, 'message': '举报成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
