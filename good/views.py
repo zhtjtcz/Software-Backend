@@ -65,6 +65,23 @@ def creategood(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
+def updategood(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		id = int(data_json.get('id'))
+		newgood = GoodInfo.objects.get(goodid = id)
+		newgood.goodname = data_json.get('name')
+		newgood.description = data_json.get('description')
+		newgood.categoryid = int(data_json.get('category'))
+		newgood.price = float(data_json.get('price'))
+		newgood.save()
+		result = {'result': 1, 'message': '修改成功!', 'id': newgood.goodid}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
 def getgood(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
@@ -263,7 +280,7 @@ def report(request):
 		else:
 			Demand = GoodInfo.objects.get(demandid = id)
 			SendInfo(0, 4, "需求名为" + Demand.demandname + "的需求被举报,请及时检查其是否有违规信息" )
-		result = {'result': 0, 'message': '举报成功!'}
+		result = {'result': 1, 'message': '举报成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}

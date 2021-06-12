@@ -47,6 +47,7 @@ urlpatterns = [
 	path('user/changepassword/', changepassword, name='changepassword'),
 
 	path('good/upload/', creategood, name='upload'),
+	path('good/update/', updategood, name='update'),
 	path('good/uploadimg/', upload, name='gimgupload'),
 	path('good/category/', getcategory, name='category'),
 	path('good/getgood/', getgood, name='getgood'),
@@ -57,6 +58,7 @@ urlpatterns = [
 	path('good/report/', report, name='report'),
 
 	path('demand/upload/', createdemand, name='dupload'),
+	path('demand/update/', updatedemand, name='update'),
 	path('demand/uploadimg/', dupload, name='dimgupload'),
 	path('demand/getdemand/', getdemand, name='getdemand'),
 	path('demand/collect/', demandcollect, name='demandcollect'),

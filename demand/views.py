@@ -37,6 +37,23 @@ def createdemand(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
+def updatedemand(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		id = int(data_json.get('id'))
+		newdemand = DemandInfo().objects.get(demandid = id)
+		newdemand.demandname = data_json.get('name')
+		newdemand.description = data_json.get('description')
+		newdemand.categoryid = int(data_json.get('category'))
+		newdemand.price = float(data_json.get('price'))
+		newdemand.save()
+		result = {'result': 1, 'message': '更新成功!', 'id': newdemand.demandid}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
 def dupload(request):
 	if request.method == 'POST':
 		source = request.FILES.get('file')

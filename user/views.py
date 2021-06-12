@@ -77,6 +77,7 @@ def login(request):
 					token = token[1:]
 					request.session['token'] = token
 					result['token'] = token
+					result['id'] = user.ID
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了'}
