@@ -14,12 +14,12 @@ import datetime
 import traceback
 # Create your views here.
 
-def SendInfo(userid, type, text, ID = -1):
+def SendInfo(userid, type, text, Id = -1):
 	ID = len(Inform.objects.all())
 	inform = Inform(ID = ID, type = type, text = text, userid = userid, isread = False, score = False)
 	inform.save()
-	if ID != -1:
-		score = Score(applyid = ID, informid = inform.ID)
+	if Id != -1:
+		score = Score(applyid = Id, informid = inform.ID)
 		score.save()
 
 @csrf_exempt
@@ -32,7 +32,7 @@ def infolist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 
-		trans = ["留言回复通知", "交易申请通知", "交易申请回复通知", "商品封禁通知"]
+		trans = ["留言回复通知", "交易申请通知", "交易申请回复通知", "商品封禁通知", "商品举报通知"]
 		ans = []
 		
 		if Inform.objects.filter(userid = id).exists() == False:
