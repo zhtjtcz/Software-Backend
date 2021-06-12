@@ -214,28 +214,33 @@ def search(request):
 
 		data_json = json.loads(request.body)
 		type = int(data_json.get('type'))
-		key = data_json.get('key')
+		print(data_json.get('key'))
+		key = str(data_json.get('key'))
+		category = int(data_json.get('category'))
 		object = []
-		print(key)
 		if type == 0:
 			good = GoodInfo.objects.filter(goodname__icontains = key)
 			for i in good:
-				if i.onsale == False:
+				if i.onsale == False or (i.categoryid != category and category != 0):
 					continue
 				d = {'id': i.goodid, 'name': i.goodname, 'type': 0, 'price': i.price}
 				if GImg.objects.filter(goodid = i.goodid).exists() == True:
 					imgs = GImg.objects.filter(goodid = i.goodid)
-					d['imageUrls'] = MEDIA_SERVER + imgs[0].img.url
+					d['urls'] = MEDIA_SERVER + imgs[0].img.url
+				else:
+					d['urls'] = "https://z3.ax1x.com/2021/06/09/2cqBCD.png"
 				object.append(d)
 		else:
 			demand = DemandInfo.objects.filter(demandname__icontains = key)
 			for i in demand:
-				if i.onsale == False:
+				if i.onsale == False or (i.categoryid != category and category != 0):
 					continue
 				d = {'id': i.demandid, 'name': i.demandname, 'type': 0, 'price': i.price}
 				if DImg.objects.filter(demandid = i.demandid).exists() == True:
 					imgs = DImg.objects.filter(demandid = i.demandid)
-					d['imageUrls'] = MEDIA_SERVER + imgs[0].img.url
+					d['urls'] = MEDIA_SERVER + imgs[0].img.url
+				else:
+					d['urls'] = "https://z3.ax1x.com/2021/06/09/2cqBCD.png"
 				object.append(d)
 		# Search object by given id
 		result['len'] = len(object)

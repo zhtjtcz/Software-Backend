@@ -425,3 +425,35 @@ def isban(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def changepassword(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		status = int(data_json.get('status'))
+		user = Main.objects.get(ID = id)
+		if status == 0:
+			send_result = SendPasswordCodeEmail(user.email)
+			print(send_result)
+			result = {'result': 1, 'message': '发送成功!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			code = data_json.get('code')
+			if EmailCode.objects.filter(code=code).exists() == False:
+				result = {'result': 0, 'message': '验证码错误!'}
+				return HttpResponse(json.dumps(result), content_type="application/json")
+			Code = EmailCode.objects.get(code = code)
+			Code.delete()
+			password = data_json.get('password')
+			user.password = password
+			user.save()
+			result = {'result': 1, 'message': '修改成功!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
