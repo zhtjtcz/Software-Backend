@@ -164,8 +164,12 @@ def Update(id):
 def getuser(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
-		token = data_json.get('token')
-		id = Check(token)
+		token = data_json.get('token', -1)
+		Id = int(data_json.get('id', -1))
+		if Id != -1:
+			id = Id
+		else:
+			id = Check(token)
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
@@ -458,3 +462,40 @@ def changepassword(request):
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def count(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		id = int(data_json.get('id'))
+		result = {'result': 1, 'message': '成功!'}
+		result['good'] = len(GoodInfo.objects.filter(userid = id))
+		result['demand'] = len(DemandInfo.objects.filter(userid = id))
+		result['trade'] = len(Trade.objects.filter(ownID = id, status = 1)) + len(Trade.objects.filter(requestID = id, status = 1))
+		result['following'] = len(UserFollow.objects.filter(userID = id))
+		result['followed'] = len(UserFollow.objects.filter(followID = id))
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def isfollow(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		Id = int(data_json.get('id'))
+		if UserFollow.objects.filter(userID = id, followID = Id).exists():
+			result = {'result': 1, 'message': '成功!', 'isfollow': True}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			result = {'result': 1, 'message': '成功!', 'isfollow': False}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		result = {'result': 0, 'message': '前端炸了!'}
+		return HttpResponse(json.dumps(result), content_type="application/json")
+

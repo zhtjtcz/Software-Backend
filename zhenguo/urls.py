@@ -44,7 +44,10 @@ urlpatterns = [
 	path('user/followlist/', followlist, name='followlist'),
 	path('user/getlevel/', getlevel, name='getlevel'),
 	path('user/isban/', isban, name='isban'),
+	path('user/ban/', ban, name='ban'),
 	path('user/changepassword/', changepassword, name='changepassword'),
+	path('user/count/', count, name='count'),
+	path('user/isfollow/', isfollow, name='isfollow'),
 
 	path('good/upload/', creategood, name='upload'),
 	path('good/update/', updategood, name='update'),
@@ -56,6 +59,7 @@ urlpatterns = [
 	path('good/uncollect/', gooduncollect, name='gooduncollect'),
 	path('good/allgood/', allgood, name='allgood'),
 	path('good/report/', report, name='report'),
+	path('good/delete/', delete, name='delete'),
 
 	path('demand/upload/', createdemand, name='dupload'),
 	path('demand/update/', updatedemand, name='update'),
@@ -77,8 +81,6 @@ urlpatterns = [
 	path('inform/infolist/', infolist, name='infolist'),
 	path('inform/info/', info, name='info'),
 	path('inform/scoring/', makescore, name='scoring'),
-
-	path('ban/user/', ban, name='ban'),
 
 	path('search/', search, name='search'),
 

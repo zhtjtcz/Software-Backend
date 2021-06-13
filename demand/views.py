@@ -153,14 +153,25 @@ def CanTrade(demandid, id):
 def demandinfo(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+
 		demandid = int(data_json.get('id'))
 		result = {}
 		Demand = DemandInfo.objects.get(demandid = demandid)
+		if id == Demand.userid:
+			result['own'] = True
+		else:
+			result['own'] = False
 		result["title"] = Demand.demandname
 		result["price"] = Demand.price
 		result["description"] = Demand.description
 		result["isSold"] = 1 - Demand.onsale
 		result["date"] = Demand.uploadtime[:19]
+		result["category"] = Demand.category
 		if data_json.get('token')==None:
 			result["canTrade"] = False
 		else:	

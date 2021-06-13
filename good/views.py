@@ -168,14 +168,25 @@ def CanTrade(goodid, id):
 def goodinfo(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
+		token = data_json.get('token')
+		id = Check(token)
+		if id==-1:
+			result = {'result': 0, 'message': 'Token有误!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+
 		goodid = int(data_json.get('id'))
 		result = {}
 		Good = GoodInfo.objects.get(goodid = goodid)
+		if id == Good.userid:
+			result['own'] = True
+		else:
+			result['own'] = False
 		result["title"] = Good.goodname
 		result["price"] = Good.price
 		result["description"] = Good.description
 		result["isSold"] = 1 - Good.onsale
 		result["date"] = Good.uploadtime[:19]
+		result["category"] = Good.category
 		if data_json.get('token')==None:
 			result["canTrade"] = False
 		else:	
@@ -289,7 +300,6 @@ def report(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 
-
 @csrf_exempt
 def delete(request):
 	if request.method == 'POST':
@@ -299,10 +309,12 @@ def delete(request):
 		if type == 0:
 			Good = GoodInfo.objects.get(goodid = id)
 			Good.onsale = False
+			Good.save()
 		else:
 			Demand = GoodInfo.objects.get(demandid = id)
 			Demand.onsale = False
-		result = {'result': 1, 'message': '举报成功!'}
+			Demand.save()
+		result = {'result': 1, 'message': '下架成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
