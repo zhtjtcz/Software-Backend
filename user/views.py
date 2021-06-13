@@ -39,7 +39,7 @@ def register(request):
 				count = len(all)
 				new_user = Main(ID=count, username=username, password=password1, email=email)
 				new_user.save()
-				new_info = UserInfo(userID = count)
+				new_info = UserInfo(userID = count, score = 5.0)
 				new_info.save()
 				result = {'result': 1, 'message': '注册成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")

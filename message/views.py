@@ -7,6 +7,7 @@ from zhenguo.settings import *
 from zhenguo.token import *
 from message.models import *
 from user.models import *
+from inform.views import *
 import datetime
 import traceback
 # Create your views here.
@@ -24,7 +25,15 @@ def reply(request):
 			sendID=id, replyID=int(data_json.get('reply')), text=data_json.get('text'), sendtime=str(datetime.datetime.now()))
 		msg.save()
 		if int(data_json.get('reply')) != -1:
+			msg2 = Msg.objects.get(ID = msg.replyID)
+			user = Main.objects.get(ID = msg2.sendID)
+			if int(data_json.get('type')) == 0:
+				goodid,demandid = msg.objectID,-1
+			else:
+				demandid,goodid = msg.objectID,-1
+			SendInfo(user.ID, 0, "你的留言有了一个新的回复，请点击按钮查看详情", goodid = goodid, demandid = demandid)
 			pass
+		
 		result = {'result': 1, 'message': '留言成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
@@ -34,6 +43,7 @@ def reply(request):
 def GetReplyInfo(i):
 	d = {"text":i.text, "sendtime":i.sendtime[:16]}
 	d["username"] = Main.objects.get(ID = i.sendID).username
+	d["userid"] = i.sendID
 	if Userheadshot.objects.filter(userID = i.sendID).exists() == False:
 		d['url'] = 'https://z3.ax1x.com/2021/06/09/2cTNY4.png'
 	else:

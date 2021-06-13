@@ -170,10 +170,11 @@ def goodinfo(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
+		'''
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-
+		'''
 		goodid = int(data_json.get('id'))
 		result = {}
 		Good = GoodInfo.objects.get(goodid = goodid)
@@ -181,12 +182,17 @@ def goodinfo(request):
 			result['own'] = True
 		else:
 			result['own'] = False
+		if GoodCollect.objects.filter(userID = id, goodID = Good.goodid).exists():
+			result['iscollect'] = True
+		else:
+			result['iscollect'] = False
+		result['userid'] = Good.userid
 		result["title"] = Good.goodname
 		result["price"] = Good.price
 		result["description"] = Good.description
 		result["isSold"] = 1 - Good.onsale
 		result["date"] = Good.uploadtime[:19]
-		result["category"] = Good.category
+		result["category"] = Good.categoryid
 		if data_json.get('token')==None:
 			result["canTrade"] = False
 		else:	
@@ -289,16 +295,15 @@ def report(request):
 		type = int(data_json.get('type'))
 		if type == 0:
 			Good = GoodInfo.objects.get(goodid = id)
-			SendInfo(0, 4, "商品名为" + Good.goodname + "的商品被举报,请及时检查其是否有违规信息" )
+			SendInfo(0, 5, "商品名为" + Good.goodname + "的商品被举报,请及时检查其是否有违规信息", id, -1)
 		else:
-			Demand = GoodInfo.objects.get(demandid = id)
-			SendInfo(0, 4, "需求名为" + Demand.demandname + "的需求被举报,请及时检查其是否有违规信息" )
+			Demand = DemandInfo.objects.get(demandid = id)
+			SendInfo(0, 5, "需求名为" + Demand.demandname + "的需求被举报,请及时检查其是否有违规信息", -1, id)
 		result = {'result': 1, 'message': '举报成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
-
 
 @csrf_exempt
 def delete(request):
@@ -310,9 +315,11 @@ def delete(request):
 			Good = GoodInfo.objects.get(goodid = id)
 			Good.onsale = False
 			Good.save()
+			SendInfo(GoodInfo.userid, 4, id, -1)
 		else:
-			Demand = GoodInfo.objects.get(demandid = id)
+			Demand = DemandInfo.objects.get(demandid = id)
 			Demand.onsale = False
+			SendInfo(DemandInfo.userid, 4, -1, id)
 			Demand.save()
 		result = {'result': 1, 'message': '下架成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")

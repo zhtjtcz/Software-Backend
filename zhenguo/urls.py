@@ -62,7 +62,7 @@ urlpatterns = [
 	path('good/delete/', delete, name='delete'),
 
 	path('demand/upload/', createdemand, name='dupload'),
-	path('demand/update/', updatedemand, name='update'),
+	path('demand/update/', updatedemand, name='demandupdate'),
 	path('demand/uploadimg/', dupload, name='dimgupload'),
 	path('demand/getdemand/', getdemand, name='getdemand'),
 	path('demand/collect/', demandcollect, name='demandcollect'),

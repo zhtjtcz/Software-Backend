@@ -41,7 +41,7 @@ def updatedemand(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		id = int(data_json.get('id'))
-		newdemand = DemandInfo().objects.get(demandid = id)
+		newdemand = DemandInfo.objects.get(demandid = id)
 		newdemand.demandname = data_json.get('name')
 		newdemand.description = data_json.get('description')
 		newdemand.categoryid = int(data_json.get('category'))
@@ -155,10 +155,11 @@ def demandinfo(request):
 		data_json = json.loads(request.body)
 		token = data_json.get('token')
 		id = Check(token)
+		'''
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
-
+		'''
 		demandid = int(data_json.get('id'))
 		result = {}
 		Demand = DemandInfo.objects.get(demandid = demandid)
@@ -166,12 +167,17 @@ def demandinfo(request):
 			result['own'] = True
 		else:
 			result['own'] = False
+		if DemandCollect.objects.filter(userID = id, demandID = Demand.demandid).exists():
+			result['iscollect'] = True
+		else:
+			result['iscollect'] = False
+		result['userid'] = Demand.userid
 		result["title"] = Demand.demandname
 		result["price"] = Demand.price
 		result["description"] = Demand.description
 		result["isSold"] = 1 - Demand.onsale
 		result["date"] = Demand.uploadtime[:19]
-		result["category"] = Demand.category
+		result["category"] = Demand.categoryid
 		if data_json.get('token')==None:
 			result["canTrade"] = False
 		else:	
