@@ -43,6 +43,9 @@ def apply(request):
 		if Trade.objects.filter(objectID = objectID, type = type,requestID = id, ownID = own).exists() == True:
 			result = {'result': 0, 'message': '不能重复申请!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
+		if BanInfo.objects.filter(userID = id).exists() == True:
+			result = {'result': 0, 'message': '您已被封禁,不能申请交易!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
 		trade = Trade(ID = len(Trade.objects.all()), objectID = objectID, type = type,
 			requestID = id, ownID = own, status = 0, score = 0.0)
 		trade.save()
@@ -76,12 +79,29 @@ def confirm(request):
 
 		confirm = int(data_json.get('confirm'))
 
+		if apply.type == 0:
+			good = GoodInfo.objects.get(goodid = apply.objectID)
+			if good.onsale == False:
+				result = {'result': 0, 'message': '已进行过交易!'}
+				return HttpResponse(json.dumps(result), content_type="application/json")
+		else:
+			demand = DemandInfo.objects.get(demandid = apply.objectID)
+			if demand.onsale == False:
+				result = {'result': 0, 'message': '已进行过交易!'}
+				return HttpResponse(json.dumps(result), content_type="application/json")
+
 		apply.status = confirm
 		if confirm == 1:
 			if apply.type == 0:
+				good = GoodInfo.objects.get(goodid = apply.objectID)
+				good.onsale = False
+				good.save()
 				SendInfo(apply.requestID, 3, "您的交易请求已被确认,对方微信为"+ Main.objects.get(ID = apply.ownID).wxid +",请尽快完成交易,并在完成后进行评分.",
 					apply.objectID, -1, apply.ID)
 			else:
+				demand = DemandInfo.objects.get(demandid = apply.objectID)
+				demand.onsale = False
+				demand.save()
 				SendInfo(apply.ownID, 3, "交易请求已确认,对方微信为"+ Main.objects.get(ID = apply.requestID).wxid +",请尽快完成交易,并在完成后进行评分.",
 					-1, apply.objectID, apply.ID)
 		else:
@@ -115,12 +135,19 @@ def applylist(request):
 			if own.userid != id:
 				result = {'result': 0, 'message': '权限错误!'}
 				return HttpResponse(json.dumps(result), content_type="application/json")
+			
+			if own.onsale == False:
+				result = {'result': 1, 'message': '成功!', "apply": []}
+				return HttpResponse(json.dumps(result), content_type="application/json")
 			alltarde = Trade.objects.filter(objectID = objectID, type = type, ownID = id)
 
 		else:
 			own = DemandInfo.objects.get(demandid = objectID)
 			if own.userid != id:
 				result = {'result': 0, 'message': '权限错误!'}
+				return HttpResponse(json.dumps(result), content_type="application/json")
+			if own.onsale == False:
+				result = {'result': 1, 'message': '成功!', "apply": []}
 				return HttpResponse(json.dumps(result), content_type="application/json")
 			alltarde = Trade.objects.filter(objectID = objectID, type = type, ownID = id)
 

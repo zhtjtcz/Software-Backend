@@ -10,6 +10,7 @@ from trade.models import *
 from demand.models import *
 from good.models import *
 from inform.models import *
+from user.views import *
 import datetime
 import traceback
 # Create your views here.
@@ -87,7 +88,8 @@ def makescore(request):
 		apply = Trade.objects.get(ID = score.applyid)
 		apply.score = s
 		apply.save()
-
+		Update(apply.ownID)
+		Update(apply.requestID)
 		result = {'result': 1, 'message': '成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:

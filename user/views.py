@@ -139,7 +139,7 @@ def uploadimg(request):
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
 def Update(id):
-	User = Main.objects.get(ID = id)
+	User = UserInfo.objects.get(userID = id)
 	sell = Trade.objects.filter(type = 0, ownID = id)
 	Sell = Trade.objects.filter(type = 1, requestID = id)
 	ans = 0
@@ -156,7 +156,8 @@ def Update(id):
 		User.score = 5.0
 		User.save()
 	else:
-		User.score = ans/cnt
+		s = "%.2f"%(ans/cnt)
+		User.score = s
 		User.save()
 # Update a user's score
 
@@ -305,9 +306,9 @@ def followlist(request):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		followlist = UserFollow.objects.filter(userID = id)
-		for i in followlist:
-			print(i.followID)
 		personlist = [UserInfo.objects.get(userID = i.followID) for i in followlist]
+		
+		Id = [i.userID for i in personlist]
 		name = [Main.objects.get(ID = i.userID).username for i in personlist]
 		grade = [i.grade if i.grade else -1 for i in personlist]
 		location = [i.location if i.location else -1 for i in personlist]
@@ -319,7 +320,8 @@ def followlist(request):
 				url.append(MEDIA_SERVER + imgs.headshot.url)
 			else:
 				url.append('https://z3.ax1x.com/2021/06/09/2cTNY4.png')
-		result = {'result': 1, 'message': '获取成功!', 'name': name, 'grade': grade, 'location': location, 'url':url, 'score': score}
+		result = {'result': 1, 'message': '获取成功!', 'name': name, 'grade': grade,
+			'location': location, 'url':url, 'score': score, 'id': Id}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
 		result = {'result': 0, 'message': '前端炸了!'}
