@@ -46,7 +46,11 @@ def creategood(request):
 		token = data_json.get('token','0')
 		id = Check(token)
 		if id==-1:
-			result = {'result': 0, 'message': 'Token有误!'}
+			result = {'result': 0, 'message': '请先登录!'}
+			return HttpResponse(json.dumps(result), content_type="application/json")
+		user = Main.objects.get(ID = id)
+		if user.wxid == "":
+			result = {'result': 0, 'message': '请先填写微信号后再上传商品!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
 		newgood = GoodInfo()
 		newgood.goodid = len(GoodInfo.objects.all())
