@@ -166,11 +166,13 @@ def getuser(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
 		token = data_json.get('token', -1)
+		print(token, Check(token))
 		Id = int(data_json.get('id', -1))
 		if Id != -1:
 			id = Id
 		else:
 			id = Check(token)
+		print(id)
 		if id==-1:
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")
@@ -226,7 +228,7 @@ def getinfo(request):
 		token > 0, Id = -1		-> Self
 		Id = -10				-> Self
 		'''
-
+		print(id, Id)
 		if (id==-1 and Id==-10) or (id==-1 and Id==-1):
 			result = {'result': 0, 'message': 'Token有误!'}
 			return HttpResponse(json.dumps(result), content_type="application/json")

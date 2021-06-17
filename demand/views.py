@@ -83,6 +83,14 @@ def getdemand(request):
 			return HttpResponse(json.dumps(result), content_type="application/json")
 
 		l = DemandInfo.objects.filter(userid = id)
+		L = []
+		for i in l:
+			if i.onsale == False:
+				continue
+			L.append(i)
+		l = []
+		for i in L:
+			l.append(i)
 		id = [i.demandid for i in l]
 		name = [i.demandname for i in l]
 		description = [i.description for i in l]
