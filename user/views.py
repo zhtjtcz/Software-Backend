@@ -177,7 +177,8 @@ def getuser(request):
 		Update(id)
 		base = Main.objects.get(ID = id)
 		more = UserInfo.objects.get(userID = id)
-		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'url': 'https://z3.ax1x.com/2021/06/09/2cTNY4.png', 'score': more.score}
+		result = {'result': 1, 'message': '查询成功!', 'name': base.username, 'id':id,
+			'url': 'https://z3.ax1x.com/2021/06/09/2cTNY4.png', 'score': more.score}
 		if Userheadshot.objects.filter(userID = id).exists()==True:
 			result['url']=MEDIA_SERVER + Userheadshot.objects.get(userID = id).headshot.url
 		return HttpResponse(json.dumps(result), content_type="application/json")
@@ -443,7 +444,7 @@ def changepassword(request):
 		if username != 'null':
 			user = Main.objects.get(username = username)
 			if status == 0:
-				SendPasswordCodeEmail(user.email, user.password)
+				SendPasswordCodeEmail(user.email)
 				result = {'result': 1, 'message': '发送成功!'}
 				return HttpResponse(json.dumps(result), content_type="application/json")
 			else:

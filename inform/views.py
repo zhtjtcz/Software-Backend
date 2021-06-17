@@ -15,7 +15,7 @@ import datetime
 import traceback
 # Create your views here.
 
-trans = ["留言回复通知", "交易申请通知", "申请拒绝通知", "申请通过通知", "商品封禁通知", "商品举报通知"]
+trans = ["留言回复通知", "交易申请通知", "申请拒绝通知", "申请通过通知", "商品下架通知", "商品举报通知"]
 
 def SendInfo(userid, type, text, goodid, demandid, Id = -1):
 	ID = len(Informs.objects.all())

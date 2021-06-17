@@ -31,7 +31,7 @@ def reply(request):
 				goodid,demandid = msg.objectID,-1
 			else:
 				demandid,goodid = msg.objectID,-1
-			SendInfo(user.ID, 0, "你的留言有了一个新的回复，请点击按钮查看详情", goodid = goodid, demandid = demandid)
+			SendInfo(user.ID, 0, "你的留言有了一个新的回复，请点此查看详情", goodid = goodid, demandid = demandid)
 			pass
 		
 		result = {'result': 1, 'message': '留言成功!'}

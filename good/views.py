@@ -319,12 +319,14 @@ def delete(request):
 			Good = GoodInfo.objects.get(goodid = id)
 			Good.onsale = False
 			Good.save()
-			SendInfo(GoodInfo.userid, 4, id, -1)
+			SendInfo(Good.userid, 4, "您的商品"+ Good.demandname+"已下架",
+				id, -1)
 		else:
 			Demand = DemandInfo.objects.get(demandid = id)
 			Demand.onsale = False
-			SendInfo(DemandInfo.userid, 4, -1, id)
 			Demand.save()
+			SendInfo(Demand.userid, 4, "您的需求"+ Demand.demandname+"已下架",
+				  -1, id)
 		result = {'result': 1, 'message': '下架成功!'}
 		return HttpResponse(json.dumps(result), content_type="application/json")
 	else:
